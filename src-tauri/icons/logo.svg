@@ -1,37 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1a1a2e"/>
-      <stop offset="100%" stop-color="#16213e"/>
-    </linearGradient>
-    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00d9ff"/>
-      <stop offset="100%" stop-color="#0099ff"/>
+    <linearGradient id="paint0_linear" x1="256" y1="0" x2="256" y2="512" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
     </linearGradient>
   </defs>
-
-  <!-- Background -->
-  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-
-  <!-- L shape - stylized -->
-  <path d="M 140 120
-           L 140 340
-           Q 140 380 180 380
-           L 320 380"
-        fill="none"
-        stroke="url(#accent)"
-        stroke-width="48"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-
-  <!-- Mind dot / spark -->
-  <circle cx="370" cy="160" r="36" fill="url(#accent)"/>
-
-  <!-- Connection line -->
-  <path d="M 340 190 Q 280 240 200 200"
-        fill="none"
-        stroke="url(#accent)"
-        stroke-width="8"
-        stroke-linecap="round"
-        opacity="0.6"/>
+  <rect width="512" height="512" rx="128" fill="white"/>
+  <rect width="512" height="512" rx="128" fill="url(#paint0_linear)" fill-opacity="0.1"/>
+  
+  <g transform="translate(106, 106) scale(0.6)">
+    <path d="M256 0C114.6 0 0 114.6 0 256C0 397.4 114.6 512 256 512C397.4 512 512 397.4 512 256C512 114.6 397.4 0 256 0ZM374.8 152.4L337.4 384.6C335.6 395.4 322.2 399.2 314.6 391L238.8 322.2L348.6 195.4C354.2 189 347.2 181.2 340.2 186L206.8 296.6L124.6 266.2C113.8 262.2 114.2 246.6 125.2 242.4L357.4 145.4C368.6 141.2 377.2 153.2 374.8 152.4Z" fill="url(#paint0_linear)"/>
+  </g>
+  
+  <rect x="64" y="64" width="384" height="384" rx="64" stroke="url(#paint0_linear)" stroke-width="32" stroke-opacity="0.8"/>
 </svg>
