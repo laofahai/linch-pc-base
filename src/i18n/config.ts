@@ -11,6 +11,11 @@ const resources = {
         "dashboard": "Dashboard",
         "demo": "Demo",
         "demo_desc": "A simple interactive counter to demonstrate state management.",
+        "demo_persist_hint": "State is persisted to localStorage via Zustand.",
+        "demo_db_hint": "State is persisted to SQLite database.",
+        "demo_notes_title": "Quick Notes (SQLite Demo)",
+        "demo_notes_placeholder": "Write a note...",
+        "demo_notes_empty": "No notes yet. Add one above!",
         "settings": "Settings",
         "getting_started": "Getting Started",
         "features": "Key Features"
@@ -46,7 +51,13 @@ const resources = {
             "check_updates": "Check for Updates",
             "checking": "Checking...",
             "up_to_date": "You're up to date",
-            "current_version": "Current Version"
+            "current_version": "Current Version",
+            "new_version": "New version available",
+            "download_update": "Download Update",
+            "ready_to_install": "Ready to install",
+            "restart_now": "Restart Now",
+            "update_error": "Update check failed",
+            "retry": "Retry"
         }
       }
     }
@@ -59,6 +70,11 @@ const resources = {
         "dashboard": "仪表盘",
         "demo": "演示",
         "demo_desc": "一个简单的交互式计数器，用于演示状态管理。",
+        "demo_persist_hint": "状态通过 Zustand 持久化到 localStorage。",
+        "demo_db_hint": "状态持久化到 SQLite 数据库。",
+        "demo_notes_title": "快捷笔记 (SQLite 示例)",
+        "demo_notes_placeholder": "写点什么...",
+        "demo_notes_empty": "暂无笔记，在上方添加一条吧！",
         "settings": "设置",
         "getting_started": "快速开始",
         "features": "核心特性"
@@ -94,7 +110,13 @@ const resources = {
             "check_updates": "检查更新",
             "checking": "检查中...",
             "up_to_date": "当前已是最新版本",
-            "current_version": "当前版本"
+            "current_version": "当前版本",
+            "new_version": "发现新版本",
+            "download_update": "下载更新",
+            "ready_to_install": "已准备好安装",
+            "restart_now": "立即重启",
+            "update_error": "检查更新失败",
+            "retry": "重试"
         }
       }
     }
