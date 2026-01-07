@@ -1,6 +1,6 @@
 [package]
 name = "linch-pc-base"
-version = "0.1.1"
+version = "0.1.2"
 description = "Linch PC Base"
 authors = ["you"]
 edition = "2021"
