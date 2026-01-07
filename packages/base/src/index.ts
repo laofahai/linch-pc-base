@@ -83,6 +83,10 @@ export { ThemeSwitcher } from './components/shared/ThemeSwitcher';
 export { LanguageSwitcher } from './components/shared/LanguageSwitcher';
 export { WindowControls } from './components/shared/WindowControls';
 
+// Components - Pages
+export { SettingsPage } from './components/pages/SettingsPage';
+export type { SettingsPageProps } from './components/pages/SettingsPage';
+
 // Components - Providers
 export { DatabaseProvider, useDatabase } from './components/providers/DatabaseProvider';
 export { ErrorBoundary } from './components/providers/ErrorBoundary';

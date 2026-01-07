@@ -38,6 +38,16 @@ export default function App() {
 
 如果不使用 `LinchDesktopProvider`，可在入口手动调用 `initI18n()` 来加载应用翻译（第三个参数为 `supportedLanguages`）。
 
+## 内置页面
+
+内置 `SettingsPage`，可直接作为设置页使用，支持传入 `footer` 自定义底部文案。
+
+```tsx
+import { SettingsPage } from '@linch-tech/desktop-core';
+
+<Route path="/settings" element={<SettingsPage />} />
+```
+
 ## 配置详解
 
 ```typescript

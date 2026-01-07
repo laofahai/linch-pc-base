@@ -48,7 +48,9 @@ export const baseResources = {
           "check_error": "Update check failed",
           "download_error": "Download failed",
           "retry": "Retry",
-          "updater_disabled": "Updater is disabled"
+          "updater_disabled": "Updater is disabled",
+          "footer_line1": "Built with Linch Desktop Core.",
+          "footer_line2": "Powered by Tauri v2 & React 19."
         }
       }
     }
@@ -94,7 +96,9 @@ export const baseResources = {
           "check_error": "检查更新失败",
           "download_error": "下载失败",
           "retry": "重试",
-          "updater_disabled": "更新已禁用"
+          "updater_disabled": "更新已禁用",
+          "footer_line1": "基于 Linch Desktop Core 构建。",
+          "footer_line2": "由 Tauri v2 与 React 19 驱动。"
         }
       }
     }
