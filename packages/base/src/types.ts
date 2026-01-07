@@ -254,6 +254,10 @@ export interface ComponentOverrides {
 export interface ShellProps {
   children?: ReactNode;
   className?: string;
+  /**
+   * If true, don't render Outlet (useful when you want to render children directly)
+   */
+  noOutlet?: boolean;
 }
 
 export interface TitleBarProps {
@@ -264,7 +268,6 @@ export interface NavItemComponentProps {
   item: NavItem;
   isActive: boolean;
   onClick?: () => void;
-  className?: string;
 }
 
 // ============================================================================

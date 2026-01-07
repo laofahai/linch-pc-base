@@ -16,17 +16,10 @@ import {
 import { TitleBar } from './TitleBar';
 import type { ShellProps, NavItem } from '../../types';
 
-export interface ExtendedShellProps extends ShellProps {
-  /**
-   * If true, don't render Outlet (useful when you want to render children directly)
-   */
-  noOutlet?: boolean;
-}
-
 /**
  * Main application shell with sidebar navigation
  */
-export function Shell({ children, className, noOutlet }: ExtendedShellProps) {
+export function Shell({ children, className, noOutlet }: ShellProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const config = useConfig();
@@ -41,6 +34,15 @@ export function Shell({ children, className, noOutlet }: ExtendedShellProps) {
   const sidebarWidth = layout?.sidebar?.width ?? 180;
   const sidebarPosition = layout?.sidebar?.position ?? 'left';
   const isRightSidebar = sidebarPosition === 'right';
+
+  const ShellComponent = components?.Shell;
+  if (ShellComponent && ShellComponent !== Shell) {
+    return (
+      <ShellComponent className={className} noOutlet={noOutlet}>
+        {children}
+      </ShellComponent>
+    );
+  }
 
   // Use custom TitleBar if provided
   const TitleBarComponent = components?.TitleBar ?? TitleBar;
