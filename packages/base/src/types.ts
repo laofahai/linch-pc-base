@@ -1,0 +1,345 @@
+import type { ReactNode, ComponentType } from 'react';
+import type { LucideIcon } from 'lucide-react';
+import type { Migration } from './lib/database';
+
+// ============================================================================
+// Core Config Types
+// ============================================================================
+
+export interface LinchDesktopConfig {
+  /**
+   * Brand configuration
+   */
+  brand: BrandConfig;
+
+  /**
+   * Navigation items
+   */
+  nav: NavItem[];
+
+  /**
+   * Feature toggles
+   */
+  features?: FeaturesConfig;
+
+  /**
+   * Theme customization
+   */
+  theme?: ThemeConfig;
+
+  /**
+   * Layout configuration
+   */
+  layout?: LayoutConfig;
+
+  /**
+   * Slot injection
+   */
+  slots?: SlotsConfig;
+
+  /**
+   * Component overrides
+   */
+  components?: ComponentOverrides;
+
+  /**
+   * i18n configuration
+   */
+  i18n?: I18nConfig;
+
+  /**
+   * Database configuration
+   */
+  database?: DatabaseConfig;
+
+  /**
+   * Sentry configuration
+   */
+  sentry?: SentryConfig;
+}
+
+// ============================================================================
+// Brand Config
+// ============================================================================
+
+export interface BrandConfig {
+  /**
+   * Application name (or i18n key)
+   */
+  name: string;
+
+  /**
+   * Logo component
+   */
+  logo?: ComponentType<{ className?: string }>;
+
+  /**
+   * Version string to display
+   */
+  version?: string;
+}
+
+// ============================================================================
+// Navigation
+// ============================================================================
+
+export interface NavItem {
+  /**
+   * Title (can be i18n key or plain text)
+   */
+  title: string;
+
+  /**
+   * Route path
+   */
+  path: string;
+
+  /**
+   * Icon component
+   */
+  icon: LucideIcon | ComponentType<{ className?: string }>;
+
+  /**
+   * Badge content (optional)
+   */
+  badge?: string | number;
+}
+
+// ============================================================================
+// Features Config
+// ============================================================================
+
+export interface FeaturesConfig {
+  /**
+   * Enable auto-updater (default: true)
+   */
+  updater?: boolean;
+
+  /**
+   * Enable database (default: true)
+   */
+  database?: boolean;
+
+  /**
+   * Enable Sentry error reporting (default: false)
+   */
+  sentry?: boolean;
+
+  /**
+   * Enable devtools in development (default: true in dev)
+   */
+  devtools?: boolean;
+}
+
+// ============================================================================
+// Theme Config
+// ============================================================================
+
+export interface ThemeConfig {
+  /**
+   * Color overrides
+   */
+  colors?: Partial<ThemeColors>;
+
+  /**
+   * Border radius preset
+   */
+  radius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+
+  /**
+   * Font family overrides
+   */
+  font?: {
+    sans?: string;
+    mono?: string;
+  };
+
+  /**
+   * Custom CSS variables
+   */
+  cssVariables?: Record<string, string>;
+}
+
+export interface ThemeColors {
+  primary: string;
+  secondary: string;
+  background: string;
+  foreground: string;
+  muted: string;
+  mutedForeground: string;
+  border: string;
+  ring: string;
+  accent: string;
+  accentForeground: string;
+  destructive: string;
+  destructiveForeground: string;
+}
+
+// ============================================================================
+// Layout Config
+// ============================================================================
+
+export interface LayoutConfig {
+  /**
+   * Sidebar configuration
+   */
+  sidebar?: {
+    width?: number;
+    position?: 'left' | 'right';
+    collapsible?: boolean;
+    defaultCollapsed?: boolean;
+  };
+
+  /**
+   * Title bar configuration
+   */
+  titleBar?: {
+    height?: number;
+    showWindowControls?: boolean;
+    draggable?: boolean;
+  };
+
+  /**
+   * Content area configuration
+   */
+  content?: {
+    padding?: number;
+    maxWidth?: number;
+  };
+}
+
+// ============================================================================
+// Slots Config
+// ============================================================================
+
+export interface SlotsConfig {
+  /**
+   * Title bar slots
+   */
+  titleBar?: {
+    left?: ReactNode;
+    center?: ReactNode;
+    right?: ReactNode;
+  };
+
+  /**
+   * Sidebar slots
+   */
+  sidebar?: {
+    header?: ReactNode;
+    footer?: ReactNode;
+    beforeNav?: ReactNode;
+    afterNav?: ReactNode;
+  };
+
+  /**
+   * Shell slots
+   */
+  shell?: {
+    beforeContent?: ReactNode;
+    afterContent?: ReactNode;
+  };
+}
+
+// ============================================================================
+// Component Overrides
+// ============================================================================
+
+export interface ComponentOverrides {
+  /**
+   * Override Shell component
+   */
+  Shell?: ComponentType<ShellProps>;
+
+  /**
+   * Override TitleBar component
+   */
+  TitleBar?: ComponentType<TitleBarProps>;
+
+  /**
+   * Override Sidebar component
+   */
+  Sidebar?: ComponentType<SidebarProps>;
+
+  /**
+   * Override NavItem component
+   */
+  NavItem?: ComponentType<NavItemComponentProps>;
+}
+
+// ============================================================================
+// Component Props (for overrides)
+// ============================================================================
+
+export interface ShellProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+export interface TitleBarProps {
+  className?: string;
+}
+
+export interface SidebarProps {
+  className?: string;
+}
+
+export interface NavItemComponentProps {
+  item: NavItem;
+  isActive: boolean;
+  onClick?: () => void;
+  className?: string;
+}
+
+// ============================================================================
+// i18n Config
+// ============================================================================
+
+export interface I18nConfig {
+  /**
+   * Default language
+   */
+  defaultLanguage?: string;
+
+  /**
+   * Supported languages
+   */
+  supportedLanguages?: string[];
+
+  /**
+   * Additional translation resources (will be merged with base)
+   */
+  resources?: Record<string, Record<string, unknown>>;
+}
+
+// ============================================================================
+// Database Config
+// ============================================================================
+
+export interface DatabaseConfig {
+  /**
+   * Database name (default: 'app.db')
+   */
+  name?: string;
+
+  /**
+   * Additional migrations (will run after base migrations)
+   */
+  migrations?: Migration[];
+}
+
+// ============================================================================
+// Sentry Config
+// ============================================================================
+
+export interface SentryConfig {
+  /**
+   * Sentry DSN
+   */
+  dsn?: string;
+
+  /**
+   * Traces sample rate (0-1)
+   */
+  tracesSampleRate?: number;
+}

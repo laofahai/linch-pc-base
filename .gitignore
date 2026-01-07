@@ -6,11 +6,11 @@ dist
 !.env.example
 
 # Rust
-src-tauri/target/
-src-tauri/gen/schemas/
+**/target/
+**/gen/schemas/
 
 # Signing keys (NEVER commit private keys!)
-src-tauri/.keys/update.key
+**/.keys/update.key
 *.key
 !*.key.pub
 
@@ -29,6 +29,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Build outputs
+*.tsbuildinfo
 
 # Other
 coverage
