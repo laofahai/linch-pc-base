@@ -265,3 +265,20 @@ jobs:
           echo ""
           echo "=== latest.json content ==="
           ossutil cat "oss://${BUCKET}/releases/latest.json" || echo "Failed to read latest.json"
+
+  # Publish release after all builds complete
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    # Only publish when building all platforms (not single platform test)
+    if: ${{ github.event.inputs.platform == '' }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: Publish release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Publishing release for tag: ${{ github.ref_name }}"
+          gh release edit "${{ github.ref_name }}" --draft=false --repo ${{ github.repository }}
