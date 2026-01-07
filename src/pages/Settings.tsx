@@ -105,14 +105,27 @@ export default function Settings() {
           </div>
         );
 
-      case "error":
+      case "check-error":
         return (
           <div className="space-y-2 text-center">
             <div className="flex items-center justify-center gap-2 text-sm text-destructive">
               <AlertCircle className="h-4 w-4" />
-              {error?.message || t("settings.about.update_error")}
+              {error?.message || t("settings.about.check_error")}
             </div>
             <Button variant="outline" onClick={handleCheckUpdate} className="w-56">
+              {t("settings.about.retry")}
+            </Button>
+          </div>
+        );
+
+      case "download-error":
+        return (
+          <div className="space-y-2 text-center">
+            <div className="flex items-center justify-center gap-2 text-sm text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              {error?.message || t("settings.about.download_error")}
+            </div>
+            <Button variant="outline" onClick={handleDownload} className="w-56">
               {t("settings.about.retry")}
             </Button>
           </div>

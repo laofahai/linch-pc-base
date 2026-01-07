@@ -58,6 +58,7 @@ pnpm tauri signer generate -w src-tauri/.keys/update.key --ci
 |--------|------|
 | `TAURI_SIGNING_PRIVATE_KEY` | 私钥文件内容 (cat src-tauri/.keys/update.key) |
 | `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | 私钥密码 (如果设置了的话) |
+| `VITE_SENTRY_DSN` | Sentry DSN (可选，用于错误上报) |
 | `OSS_ACCESS_KEY_ID` | 阿里云 AccessKey ID |
 | `OSS_ACCESS_KEY_SECRET` | 阿里云 AccessKey Secret |
 
@@ -91,16 +92,24 @@ pnpm tauri signer generate -w src-tauri/.keys/update.key --ci
 
 ### 5. 发布更新
 
-```bash
-# 更新版本号
-# 编辑 package.json 和 src-tauri/tauri.conf.json 中的 version
+使用 release-it 自动处理版本号和 changelog：
 
-# 提交并打 tag
-git add .
-git commit -m "chore: bump version to 0.2.0"
-git tag v0.2.0
-git push && git push --tags
+```bash
+# 发布 patch 版本
+pnpm release patch
+
+# 发布 minor 版本
+pnpm release minor
+
+# CI 模式 (无交互确认)
+pnpm release patch --ci
 ```
+
+release-it 会自动：
+- 更新 package.json 和 tauri.conf.json 版本号
+- 生成/更新 CHANGELOG.md
+- 创建 commit 和 tag
+- 推送到远程仓库
 
 ## 更新源配置
 
@@ -140,27 +149,30 @@ git push && git push --tags
 **OSS 目录结构** (自动生成):
 ```
 releases/
-├── latest.json              # 版本信息 (必须)
-├── 0.2.0/                   # 版本目录
-│   ├── app_0.2.0_x64.msi
-│   ├── app_0.2.0_x64.msi.sig
-│   ├── app_0.2.0_aarch64.app.tar.gz
-│   ├── app_0.2.0_aarch64.app.tar.gz.sig
-│   ├── app_0.2.0_x64.app.tar.gz
-│   ├── app_0.2.0_x64.app.tar.gz.sig
-│   └── app_0.2.0_amd64.AppImage
-└── 0.1.0/                   # 历史版本
-    └── ...
+└── {repo_name}/             # 项目名 (支持多项目共用 Bucket)
+    ├── latest.json          # 版本信息 (必须)
+    ├── 0.2.0/               # 版本目录
+    │   ├── app_0.2.0_x64.msi
+    │   ├── app_0.2.0_x64.msi.sig
+    │   ├── app_0.2.0_aarch64.app.tar.gz
+    │   ├── app_0.2.0_aarch64.app.tar.gz.sig
+    │   ├── app_0.2.0_x64.app.tar.gz
+    │   ├── app_0.2.0_x64.app.tar.gz.sig
+    │   └── app_0.2.0_amd64.AppImage
+    └── 0.1.0/               # 历史版本
+        └── ...
 ```
 
 **仅使用 OSS 配置**:
 ```json
 {
   "endpoints": [
-    "https://your-bucket.oss-cn-hangzhou.aliyuncs.com/releases/latest.json"
+    "https://your-bucket.oss-cn-hangzhou.aliyuncs.com/releases/{repo_name}/latest.json"
   ]
 }
 ```
+
+> **提示**: `{repo_name}` 会在 CI/CD 构建时自动替换为仓库名称
 
 ### 自建服务器
 

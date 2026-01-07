@@ -56,7 +56,8 @@ const resources = {
             "download_update": "Download Update",
             "ready_to_install": "Ready to install",
             "restart_now": "Restart Now",
-            "update_error": "Update check failed",
+            "check_error": "Update check failed",
+            "download_error": "Download failed",
             "retry": "Retry"
         }
       }
@@ -115,7 +116,8 @@ const resources = {
             "download_update": "下载更新",
             "ready_to_install": "已准备好安装",
             "restart_now": "立即重启",
-            "update_error": "检查更新失败",
+            "check_error": "检查更新失败",
+            "download_error": "下载失败",
             "retry": "重试"
         }
       }

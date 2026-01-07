@@ -36,7 +36,7 @@ export function useUpdater(): UseUpdaterReturn {
     } catch (err) {
       const e = err as Error;
       setError(e);
-      setStatus('error');
+      setStatus('check-error');
       throw e;
     }
   }, []);
@@ -58,7 +58,7 @@ export function useUpdater(): UseUpdaterReturn {
     } catch (err) {
       const e = err as Error;
       setError(e);
-      setStatus('error');
+      setStatus('download-error');
       throw e;
     }
   }, [updateInfo]);

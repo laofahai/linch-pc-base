@@ -26,7 +26,8 @@ export type UpdateStatus =
   | 'available'
   | 'downloading'
   | 'ready'
-  | 'error'
+  | 'check-error'
+  | 'download-error'
   | 'up-to-date';
 
 // ============================================================================

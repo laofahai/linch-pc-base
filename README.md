@@ -35,11 +35,18 @@
 - **多源支持**: GitHub Releases / OSS 静态托管
 - **签名验证**: Ed25519 签名确保更新安全
 
+### 监控与日志
+- **错误上报**: Sentry (前端 + Rust 后端)
+- **结构化日志**: 分级日志系统，支持自定义 Handler
+- **集中配置**: 统一配置模块，环境感知
+
 ### 工程化
 - **单元测试**: Vitest + Testing Library
 - **代码检查**: ESLint + TypeScript 严格模式
 - **Git Hooks**: Husky + lint-staged
 - **CI/CD**: GitHub Actions 多平台构建
+- **自动发布**: release-it + conventional-changelog
+- **OSS 同步**: 阿里云 OSS 自动上传更新包
 
 ## 快速开始
 
@@ -80,7 +87,10 @@ src/
 ├── i18n/               # 国际化配置
 ├── lib/                # 工具库
 │   ├── api.ts          # HTTP 客户端
+│   ├── config.ts       # 集中配置
 │   ├── database.ts     # SQLite 操作
+│   ├── logger.ts       # 结构化日志
+│   ├── sentry.ts       # Sentry 错误上报
 │   ├── updater.ts      # 更新服务
 │   ├── tauri.ts        # Tauri API 封装
 │   └── utils.ts        # 通用工具
@@ -148,21 +158,70 @@ pnpm gen:icon         # 生成图标
 ## 发布
 
 ### 1. 配置 GitHub Secrets
-```
-TAURI_SIGNING_PRIVATE_KEY      # 私钥内容
-TAURI_SIGNING_PRIVATE_KEY_PASSWORD  # 私钥密码 (可选)
+
+| Secret | 说明 |
+|--------|------|
+| `TAURI_SIGNING_PRIVATE_KEY` | Tauri 签名私钥 |
+| `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | 私钥密码 (可选) |
+| `VITE_SENTRY_DSN` | Sentry DSN (可选，错误上报) |
+| `OSS_ACCESS_KEY_ID` | 阿里云 AccessKey ID (如启用 OSS) |
+| `OSS_ACCESS_KEY_SECRET` | 阿里云 AccessKey Secret |
+
+### 2. 配置 GitHub Variables
+
+| Variable | 说明 |
+|----------|------|
+| `ENABLE_OSS_SYNC` | 是否启用 OSS 同步 (`true`/`false`) |
+| `OSS_BUCKET` | OSS Bucket 名称 |
+| `OSS_REGION` | OSS 区域 (如 `cn-hangzhou`) |
+
+### 3. 创建 Release
+
+使用 release-it 自动发布：
+```bash
+# 发布 patch 版本 (0.1.0 -> 0.1.1)
+pnpm release patch
+
+# 发布 minor 版本 (0.1.0 -> 0.2.0)
+pnpm release minor
+
+# 发布 major 版本 (0.1.0 -> 1.0.0)
+pnpm release major
+
+# CI 模式 (无交互)
+pnpm release patch --ci
 ```
 
-### 2. 创建 Release
+release-it 将自动：
+- 更新 package.json、tauri.conf.json、Cargo.toml 版本号
+- 生成 CHANGELOG.md (基于 conventional commits)
+- 创建 Git commit 和 tag
+- 推送到 GitHub
+
+### Commit 规范
+
+使用 [Conventional Commits](https://www.conventionalcommits.org/) 格式，自动归类到 CHANGELOG：
+
+| 类型 | 说明 | CHANGELOG 分类 |
+|------|------|---------------|
+| `feat:` | 新功能 | Features |
+| `fix:` | Bug 修复 | Bug Fixes |
+| `perf:` | 性能优化 | Performance |
+| `refactor:` | 重构 | Refactoring |
+| `docs:` | 文档 | Documentation |
+| `chore:` | 杂项 | (隐藏) |
+
+示例：
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git commit -m "feat: 添加用户登录功能"
+git commit -m "fix: 修复更新检查失败的问题"
 ```
 
 GitHub Actions 将自动：
 - 构建 Windows / macOS / Linux
 - 签名更新包
-- 发布到 GitHub Releases
+- 上传到 GitHub Releases
+- 同步到阿里云 OSS (如已启用)
 
 ## 技术栈
 
@@ -178,6 +237,8 @@ GitHub Actions 将自动：
 | 国际化 | i18next |
 | 桌面框架 | Tauri 2 |
 | 数据库 | SQLite |
+| 错误监控 | Sentry |
+| 发布工具 | release-it |
 | 测试 | Vitest |
 
 ## 许可证
