@@ -16,13 +16,6 @@ pnpm add i18next react-i18next i18next-browser-languagedetector
 ## 基本使用
 
 ```tsx
-// main.tsx
-import { initI18n } from '@linch-tech/desktop-core';
-import { config } from './config';
-
-// 必须在 React 渲染前调用
-initI18n(config.i18n?.defaultLanguage, config.i18n?.resources);
-
 // App.tsx
 import { LinchDesktopProvider, Shell } from '@linch-tech/desktop-core';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -42,6 +35,8 @@ export default function App() {
   );
 }
 ```
+
+如果不使用 `LinchDesktopProvider`，可在入口手动调用 `initI18n()` 来加载应用翻译。
 
 ## 配置详解
 
@@ -194,7 +189,7 @@ const theme = await getSetting<string>('theme');
 # src-tauri/Cargo.toml
 [dependencies]
 # 未发布到 crates.io 前，使用 git 依赖
-linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", package = "linch_desktop_core" }
+linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", tag = "v0.1.2", package = "linch_desktop_core" }
 
 # 发布到 crates.io 后可改为版本号
 # linch_desktop_core = "0.1"

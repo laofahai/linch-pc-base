@@ -21,8 +21,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@linch-tech'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -30,15 +29,18 @@ jobs:
           version: 9
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      - name: Build package
-        run: pnpm --filter @linch-tech/desktop-core build
-
-      - name: Publish to GitHub Packages
-        run: pnpm --filter @linch-tech/desktop-core publish --no-git-checks
+      - name: Publish npm packages
+        run: pnpm release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Rust crate
+        if: ${{ secrets.CARGO_REGISTRY_TOKEN != '' }}
+        run: cargo publish --manifest-path packages/tauri/Cargo.toml
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

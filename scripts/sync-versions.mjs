@@ -16,6 +16,7 @@ const basePkg = JSON.parse(
   fs.readFileSync(path.join(ROOT, 'packages/base/package.json'), 'utf-8')
 );
 const version = basePkg.version;
+const repoUrl = 'https://github.com/laofahai/linch-pc-base';
 
 console.log(`\n📦 Syncing version ${version} to Rust crates and templates...\n`);
 
@@ -50,7 +51,9 @@ if (fs.existsSync(templatePkg)) {
 const templateCargo = path.join(ROOT, 'packages/create-linch-app/templates/default/src-tauri/Cargo.toml');
 if (fs.existsSync(templateCargo)) {
   let content = fs.readFileSync(templateCargo, 'utf-8');
-  content = content.replace(/linch_desktop_core = "[^"]+"/g, `linch_desktop_core = "${version}"`);
+  const gitDep = `linch_desktop_core = { git = "${repoUrl}", tag = "v${version}", package = "linch_desktop_core" }`;
+  content = content.replace(/linch_desktop_core\s*=\s*"[^"]+"/g, gitDep);
+  content = content.replace(/linch_desktop_core\s*=\s*\{[^}]*\}/g, gitDep);
   fs.writeFileSync(templateCargo, content);
   console.log(`  ✓ Template Cargo.toml`);
 }

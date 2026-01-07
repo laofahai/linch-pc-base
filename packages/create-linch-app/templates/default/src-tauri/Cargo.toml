@@ -13,7 +13,7 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", package = "linch_desktop_core" }
+linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", tag = "v0.1.2", package = "linch_desktop_core" }
 tauri = { version = "2", features = [] }
 tauri-plugin-fs = "2"
 tauri-plugin-opener = "2"
