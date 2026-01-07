@@ -77,7 +77,7 @@ linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", tag = 
 pnpm tauri:build
 ```
 
-**破坏性更新**：查看 [CHANGELOG](./CHANGELOG.md) 了解迁移步骤。
+**破坏性更新**：查看 GitHub Releases 了解迁移步骤。
 
 ---
 
