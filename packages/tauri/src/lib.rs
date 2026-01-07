@@ -30,8 +30,6 @@ pub struct LinchConfig {
     /// Sentry sample rate (0.0 - 1.0)
     pub sentry_sample_rate: f32,
 
-    /// Enable devtools in debug mode
-    pub enable_devtools: bool,
 }
 
 impl LinchConfig {
@@ -40,7 +38,6 @@ impl LinchConfig {
         Self {
             sentry_dsn: None,
             sentry_sample_rate: 1.0,
-            enable_devtools: true,
         }
     }
 
@@ -56,18 +53,11 @@ impl LinchConfig {
         self
     }
 
-    /// Enable/disable devtools
-    pub fn enable_devtools(mut self, enable: bool) -> Self {
-        self.enable_devtools = enable;
-        self
-    }
-
     /// Create config from environment variables
     pub fn from_env() -> Self {
         Self {
             sentry_dsn: option_env!("VITE_SENTRY_DSN").map(String::from),
             sentry_sample_rate: 1.0,
-            enable_devtools: cfg!(debug_assertions),
         }
     }
 }
