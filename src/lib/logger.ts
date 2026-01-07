@@ -25,9 +25,9 @@ class Logger {
   private minLevel: LogLevel;
   private handlers: LogHandler[] = [];
 
-  constructor() {
-    // In production, only show warnings and errors
-    this.minLevel = import.meta.env.PROD ? 'warn' : 'debug';
+  constructor(level?: LogLevel) {
+    // Use provided level or default based on environment
+    this.minLevel = level ?? (import.meta.env.PROD ? 'warn' : 'debug');
 
     // Default console handler
     this.addHandler(this.consoleHandler.bind(this));

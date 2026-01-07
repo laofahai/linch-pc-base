@@ -1,27 +1,25 @@
 import * as Sentry from '@sentry/react';
-
-// Sentry DSN should be configured via environment variable
-const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
+import { config } from './config';
 
 export function initSentry() {
-  if (!SENTRY_DSN) {
+  if (!config.sentry.dsn) {
     console.debug('Sentry DSN not configured, skipping initialization');
     return;
   }
 
   Sentry.init({
-    dsn: SENTRY_DSN,
-    environment: import.meta.env.MODE,
+    dsn: config.sentry.dsn,
+    environment: config.app.mode,
 
     // Performance monitoring
-    tracesSampleRate: import.meta.env.PROD ? 0.1 : 1.0,
+    tracesSampleRate: config.sentry.tracesSampleRate,
 
     // Session replay (optional, can be enabled later)
     replaysSessionSampleRate: 0,
-    replaysOnErrorSampleRate: import.meta.env.PROD ? 1.0 : 0,
+    replaysOnErrorSampleRate: config.app.isProd ? 1.0 : 0,
 
     // Only send errors in production
-    enabled: import.meta.env.PROD,
+    enabled: config.sentry.enabled,
 
     // Filter out known non-issues
     ignoreErrors: [
@@ -37,7 +35,7 @@ export function initSentry() {
 
     beforeSend(event) {
       // Don't send events in development
-      if (import.meta.env.DEV) {
+      if (config.app.isDev) {
         console.debug('Sentry event (dev mode, not sent):', event);
         return null;
       }
