@@ -33,12 +33,12 @@ export default function Dashboard() {
           <div className="space-y-4">
             <h2 className="text-xl font-semibold">✨ {t("app.features")}</h2>
             <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-4">
-              <li><strong className="text-foreground">Tauri v2</strong> - Custom Frameless Window & Drag Region</li>
+              <li><strong className="text-foreground">Tauri v2</strong> - Frameless Window, Auto Update, SQLite</li>
               <li><strong className="text-foreground">React 19 + Vite 7</strong> - Latest Frontend Stack</li>
               <li><strong className="text-foreground">Shadcn UI</strong> - Beautiful & Accessible Components</li>
+              <li><strong className="text-foreground">Sentry</strong> - Error Reporting (Frontend + Rust)</li>
+              <li><strong className="text-foreground">CI/CD</strong> - Multi-platform Build, OSS Sync, Changelog</li>
               <li><strong className="text-foreground">i18n</strong> - Built-in Multi-language Support</li>
-              <li><strong className="text-foreground">Config Driven</strong> - Customize via <code className="bg-muted px-1 rounded">src/config/app.tsx</code></li>
-              <li><strong className="text-foreground">Smart CLI</strong> - Auto-rename & Port Assignment</li>
             </ul>
           </div>
         </div>

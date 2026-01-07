@@ -1,6 +1,7 @@
 import React from "react";
 import { Inbox, Calculator } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
+import { version } from "../../package.json";
 
 export interface NavItem {
   title: string;
@@ -27,7 +28,7 @@ export const appConfig: AppConfig = {
   brand: {
     nameKey: "app.name",
     logo: Logo,
-    version: "v0.1.0",
+    version: `v${version}`,
   },
   layout: {
     sidebarWidth: 180,
