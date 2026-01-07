@@ -36,6 +36,24 @@ for (const file of cargoFiles) {
   }
 }
 
+// 更新 playground package.json 版本
+const playgroundPkgPath = path.join(ROOT, 'playground/package.json');
+if (fs.existsSync(playgroundPkgPath)) {
+  const playgroundPkg = JSON.parse(fs.readFileSync(playgroundPkgPath, 'utf-8'));
+  playgroundPkg.version = version;
+  fs.writeFileSync(playgroundPkgPath, JSON.stringify(playgroundPkg, null, 2) + '\n');
+  console.log('  ✓ playground/package.json');
+}
+
+// 更新 playground tauri.conf.json 版本
+const playgroundTauriConfig = path.join(ROOT, 'playground/src-tauri/tauri.conf.json');
+if (fs.existsSync(playgroundTauriConfig)) {
+  const tauriConfig = JSON.parse(fs.readFileSync(playgroundTauriConfig, 'utf-8'));
+  tauriConfig.version = version;
+  fs.writeFileSync(playgroundTauriConfig, JSON.stringify(tauriConfig, null, 2) + '\n');
+  console.log('  ✓ playground tauri.conf.json');
+}
+
 // 更新模板中的依赖版本
 const templatePkg = path.join(ROOT, 'packages/create-linch-app/templates/default/package.json');
 if (fs.existsSync(templatePkg)) {
