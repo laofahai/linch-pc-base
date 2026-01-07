@@ -39,6 +39,8 @@ export function Shell({ children, className, noOutlet }: ExtendedShellProps) {
   } = config;
 
   const sidebarWidth = layout?.sidebar?.width ?? 180;
+  const sidebarPosition = layout?.sidebar?.position ?? 'left';
+  const isRightSidebar = sidebarPosition === 'right';
 
   // Use custom TitleBar if provided
   const TitleBarComponent = components?.TitleBar ?? TitleBar;
@@ -82,10 +84,13 @@ export function Shell({ children, className, noOutlet }: ExtendedShellProps) {
     >
       <TitleBarComponent />
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className={cn('flex flex-1 overflow-hidden', isRightSidebar && 'flex-row-reverse')}>
         {/* Sidebar */}
         <aside
-          className="flex flex-col border-r bg-muted/5 transition-all duration-300 ease-in-out"
+          className={cn(
+            'flex flex-col bg-muted/5 transition-all duration-300 ease-in-out',
+            isRightSidebar ? 'border-l' : 'border-r'
+          )}
           style={{ width: sidebarWidth }}
         >
           {/* Sidebar Header Slot */}

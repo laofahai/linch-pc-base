@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { cn } from "../../lib/utils";
+import { useConfig } from "../../context/config";
 
 interface LanguageSwitcherProps {
   variant?: "icon" | "full";
@@ -15,10 +16,14 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
-const languages = [
+const defaultLanguages = [
   { code: 'en', label: 'English' },
   { code: 'zh', label: '中文' },
 ] as const;
+
+const languageLabels: Record<string, string> = Object.fromEntries(
+  defaultLanguages.map((lang) => [lang.code, lang.label])
+);
 
 export function LanguageSwitcher({
   variant = "icon",
@@ -26,19 +31,30 @@ export function LanguageSwitcher({
   className,
 }: LanguageSwitcherProps) {
   const { i18n } = useTranslation();
+  const config = useConfig();
+
+  const supportedLanguages = config.i18n?.supportedLanguages;
+  const languageCodes =
+    supportedLanguages && supportedLanguages.length > 0
+      ? supportedLanguages
+      : defaultLanguages.map((lang) => lang.code);
+  const languageOptions = Array.from(new Set(languageCodes)).map((code) => ({
+    code,
+    label: languageLabels[code] ?? code,
+  }));
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
 
-  const currentLanguage = languages.find(
+  const currentLanguage = languageOptions.find(
     (l) => i18n.language.startsWith(l.code)
   );
 
   if (variant === "full") {
     return (
       <div className={cn("flex gap-2", className)}>
-        {languages.map((lang) => (
+        {languageOptions.map((lang) => (
           <Button
             key={lang.code}
             variant={i18n.language.startsWith(lang.code) ? "default" : "outline"}
@@ -67,7 +83,7 @@ export function LanguageSwitcher({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {languages.map((lang) => (
+        {languageOptions.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
             onClick={() => changeLanguage(lang.code)}

@@ -64,7 +64,11 @@ pnpm update @linch-tech/desktop-core
 **Rust 部分**：
 编辑 `src-tauri/Cargo.toml`，更新版本号：
 ```toml
-linch_desktop_core = "0.2"  # 改为新版本
+# 未发布到 crates.io 前，使用 git 依赖
+linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", package = "linch_desktop_core" }
+
+# 发布到 crates.io 后可改为版本号
+# linch_desktop_core = "0.2"
 ```
 然后重新构建：
 ```bash

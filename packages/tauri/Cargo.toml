@@ -5,7 +5,7 @@ description = "Linch Desktop Core - Tauri extension library"
 authors = ["Linch Tech"]
 edition = "2021"
 license = "MIT"
-repository = "https://github.com/laofahai/linch-base"
+repository = "https://github.com/laofahai/linch-pc-base"
 
 [lib]
 name = "linch_desktop_core"

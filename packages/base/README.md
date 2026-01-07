@@ -78,6 +78,7 @@ export const config: Partial<LinchDesktopConfig> = {
   // i18n（应用翻译，会与基座翻译合并）
   i18n: {
     defaultLanguage: 'zh',
+    supportedLanguages: ['zh', 'en'],
     resources: {
       zh: {
         app: { name: '我的应用' },
@@ -112,6 +113,27 @@ export const config: Partial<LinchDesktopConfig> = {
 **应用翻译**（config.i18n.resources）：
 - 使用 `addResourceBundle` 深度合并
 - 可覆盖基座翻译
+- `supportedLanguages` 会用于语言切换器展示
+
+## 主题覆盖
+
+通过 `config.theme` 覆盖 CSS 变量与圆角/字体：
+
+```typescript
+theme: {
+  colors: {
+    primary: 'oklch(0.48 0.243 264.376)',
+    background: 'oklch(1 0 0)',
+  },
+  radius: 'md',
+  font: {
+    sans: '"SF Pro Text", system-ui, sans-serif',
+  },
+  cssVariables: {
+    sidebar: 'oklch(0.985 0 0)',
+  },
+},
+```
 
 ## 导出的组件
 
@@ -171,7 +193,11 @@ const theme = await getSetting<string>('theme');
 ```toml
 # src-tauri/Cargo.toml
 [dependencies]
-linch_desktop_core = "0.1"
+# 未发布到 crates.io 前，使用 git 依赖
+linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", package = "linch_desktop_core" }
+
+# 发布到 crates.io 后可改为版本号
+# linch_desktop_core = "0.1"
 ```
 
 ```rust

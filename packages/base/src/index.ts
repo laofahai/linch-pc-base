@@ -16,7 +16,6 @@ export type {
   ComponentOverrides,
   ShellProps,
   TitleBarProps,
-  SidebarProps,
   NavItemComponentProps,
   I18nConfig,
   DatabaseConfig,

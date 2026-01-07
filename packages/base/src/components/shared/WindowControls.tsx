@@ -9,7 +9,7 @@ export function WindowControls() {
   useEffect(() => {
     const checkMaximized = async () => {
       try {
-        if ((window as any).__TAURI__) {
+        if (window.__TAURI__) {
           const maximized = await tauri.isMaximized();
           setIsMaximized(maximized);
         }

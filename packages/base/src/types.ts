@@ -124,11 +124,6 @@ export interface FeaturesConfig {
    * Enable Sentry error reporting (default: false)
    */
   sentry?: boolean;
-
-  /**
-   * Enable devtools in development (default: true in dev)
-   */
-  devtools?: boolean;
 }
 
 // ============================================================================
@@ -186,8 +181,6 @@ export interface LayoutConfig {
   sidebar?: {
     width?: number;
     position?: 'left' | 'right';
-    collapsible?: boolean;
-    defaultCollapsed?: boolean;
   };
 
   /**
@@ -257,11 +250,6 @@ export interface ComponentOverrides {
   TitleBar?: ComponentType<TitleBarProps>;
 
   /**
-   * Override Sidebar component
-   */
-  Sidebar?: ComponentType<SidebarProps>;
-
-  /**
    * Override NavItem component
    */
   NavItem?: ComponentType<NavItemComponentProps>;
@@ -277,10 +265,6 @@ export interface ShellProps {
 }
 
 export interface TitleBarProps {
-  className?: string;
-}
-
-export interface SidebarProps {
   className?: string;
 }
 

@@ -6,7 +6,7 @@ import { initSentry } from '../lib/sentry';
 import { initI18n } from '../i18n/config';
 import { baseMigrations } from '../lib/database';
 import { logUpdateNotice } from '../lib/version-check';
-import type { LinchDesktopConfig } from '../types';
+import type { LinchDesktopConfig, ThemeColors } from '../types';
 
 export interface LinchDesktopProviderProps {
   /**
@@ -37,11 +37,70 @@ export function LinchDesktopProvider({
   const sentryConfig = config.sentry;
   const i18nConfig = config.i18n;
   const dbConfig = config.database;
+  const themeConfig = config.theme;
 
   // Add app-specific i18n resources (i18n is already initialized at module load)
   useLayoutEffect(() => {
     initI18n(i18nConfig?.defaultLanguage, i18nConfig?.resources);
   }, [i18nConfig?.defaultLanguage, i18nConfig?.resources]);
+
+  // Apply theme configuration (CSS variables, radius, fonts)
+  useLayoutEffect(() => {
+    if (!themeConfig) return;
+
+    const root = document.documentElement;
+    const colorVarMap: Record<keyof ThemeColors, string> = {
+      primary: '--primary',
+      secondary: '--secondary',
+      background: '--background',
+      foreground: '--foreground',
+      muted: '--muted',
+      mutedForeground: '--muted-foreground',
+      border: '--border',
+      ring: '--ring',
+      accent: '--accent',
+      accentForeground: '--accent-foreground',
+      destructive: '--destructive',
+      destructiveForeground: '--destructive-foreground',
+    };
+    const radiusMap: Record<NonNullable<typeof themeConfig.radius>, string> = {
+      none: '0',
+      sm: '0.25rem',
+      md: '0.5rem',
+      lg: '0.75rem',
+      full: '9999px',
+    };
+
+    if (themeConfig.colors) {
+      for (const [key, value] of Object.entries(themeConfig.colors)) {
+        if (!value) continue;
+        const cssVar = colorVarMap[key as keyof ThemeColors];
+        if (cssVar) {
+          root.style.setProperty(cssVar, value);
+        }
+      }
+    }
+
+    if (themeConfig.radius) {
+      root.style.setProperty('--radius', radiusMap[themeConfig.radius]);
+    }
+
+    if (themeConfig.font?.sans) {
+      root.style.setProperty('--font-sans', themeConfig.font.sans);
+      root.style.fontFamily = themeConfig.font.sans;
+    }
+
+    if (themeConfig.font?.mono) {
+      root.style.setProperty('--font-mono', themeConfig.font.mono);
+    }
+
+    if (themeConfig.cssVariables) {
+      for (const [key, value] of Object.entries(themeConfig.cssVariables)) {
+        const cssVar = key.startsWith('--') ? key : `--${key}`;
+        root.style.setProperty(cssVar, value);
+      }
+    }
+  }, [themeConfig]);
 
   // Initialize Sentry if enabled
   useEffect(() => {

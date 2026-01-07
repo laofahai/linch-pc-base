@@ -11,14 +11,11 @@ const defaultConfig: LinchDesktopConfig = {
     updater: true,
     database: true,
     sentry: false,
-    devtools: import.meta.env.DEV,
   },
   layout: {
     sidebar: {
       width: 180,
       position: 'left',
-      collapsible: true,
-      defaultCollapsed: false,
     },
     titleBar: {
       height: 48,
