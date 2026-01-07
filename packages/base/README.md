@@ -151,10 +151,11 @@ const { theme, setTheme } = useTheme();
 // theme: 'light' | 'dark' | 'system'
 
 // 更新
-const { status, updateInfo, check, download, install } = useUpdater({
+const { enabled, status, updateInfo, check, download, install } = useUpdater({
   enabled: config.features?.updater !== false,
 });
-// status: 'idle' | 'checking' | 'available' | 'downloading' | 'ready'
+// enabled: false 时会阻止检查与下载
+// status: 'idle' | 'checking' | 'available' | 'downloading' | 'ready' | 'up-to-date' | 'check-error' | 'download-error'
 
 // 数据库设置
 const [value, setValue] = useSetting<T>('key', defaultValue);
