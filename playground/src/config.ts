@@ -4,7 +4,7 @@ import type { LinchDesktopConfig } from '@linch-tech/desktop-core';
 export const config: Partial<LinchDesktopConfig> = {
   brand: {
     name: 'app.name',
-    version: 'v0.1.2',
+    version: `v${__APP_VERSION__}`,
   },
 
   nav: [

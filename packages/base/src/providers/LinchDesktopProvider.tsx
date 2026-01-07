@@ -41,8 +41,16 @@ export function LinchDesktopProvider({
 
   // Add app-specific i18n resources (i18n is already initialized at module load)
   useLayoutEffect(() => {
-    initI18n(i18nConfig?.defaultLanguage, i18nConfig?.resources);
-  }, [i18nConfig?.defaultLanguage, i18nConfig?.resources]);
+    initI18n(
+      i18nConfig?.defaultLanguage,
+      i18nConfig?.resources,
+      i18nConfig?.supportedLanguages
+    );
+  }, [
+    i18nConfig?.defaultLanguage,
+    i18nConfig?.resources,
+    i18nConfig?.supportedLanguages,
+  ]);
 
   // Apply theme configuration (CSS variables, radius, fonts)
   useLayoutEffect(() => {

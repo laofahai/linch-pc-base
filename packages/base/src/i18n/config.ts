@@ -179,13 +179,18 @@ i18n
  */
 export function initI18n(
   defaultLanguage?: string,
-  appResources?: Record<string, Record<string, unknown>>
+  appResources?: Record<string, Record<string, unknown>>,
+  supportedLanguages?: string[]
 ): typeof i18n {
   // Add app resources if provided
   if (appResources) {
     for (const [lang, content] of Object.entries(appResources)) {
       i18n.addResourceBundle(lang, 'translation', content, true, true);
     }
+  }
+
+  if (supportedLanguages && supportedLanguages.length > 0) {
+    i18n.options.supportedLngs = supportedLanguages;
   }
 
   // Change language if specified
