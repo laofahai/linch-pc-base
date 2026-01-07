@@ -56,7 +56,16 @@ export const config: Partial<LinchDesktopConfig> = {
 - 可覆盖基座的翻译
 - `supportedLanguages` 会用于语言切换器展示
 
-### 4. 升级基座
+### 4. 环境变量（可选）
+
+在项目根目录添加 `.env`：
+
+```
+VITE_SENTRY_DSN=
+VITE_API_BASE_URL=
+```
+
+### 5. 升级基座
 
 **前端部分**：
 ```bash
