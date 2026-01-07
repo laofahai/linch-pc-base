@@ -10,6 +10,23 @@
   "npm": {
     "publish": false
   },
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits",
+        "types": [
+          { "type": "feat", "section": "Features" },
+          { "type": "fix", "section": "Bug Fixes" },
+          { "type": "perf", "section": "Performance" },
+          { "type": "refactor", "section": "Refactoring" },
+          { "type": "docs", "section": "Documentation" },
+          { "type": "chore", "hidden": true }
+        ]
+      },
+      "infile": "CHANGELOG.md",
+      "header": "# Changelog"
+    }
+  },
   "hooks": {
     "before:bump": "echo 'Preparing release...'",
     "after:bump": "node -e \"const fs=require('fs');const v=require('./package.json').version;let t=fs.readFileSync('src-tauri/tauri.conf.json','utf8');t=JSON.parse(t);t.version=v;fs.writeFileSync('src-tauri/tauri.conf.json',JSON.stringify(t,null,2)+'\\n');let c=fs.readFileSync('src-tauri/Cargo.toml','utf8');c=c.replace(/^version = \\\".*\\\"/m,'version = \\\"'+v+'\\\"');fs.writeFileSync('src-tauri/Cargo.toml',c);console.log('Synced version',v,'to tauri.conf.json and Cargo.toml');\"",
