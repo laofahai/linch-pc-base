@@ -26,6 +26,7 @@ export const config: Partial<LinchDesktopConfig> = {
 
   i18n: {
     defaultLanguage: 'zh',
+    supportedLanguages: ['zh', 'en'],
     resources: {
       en: {
         app: {

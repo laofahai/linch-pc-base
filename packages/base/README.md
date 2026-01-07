@@ -183,6 +183,25 @@ await setSetting('theme', 'dark');
 const theme = await getSetting<string>('theme');
 ```
 
+## HTTP API
+
+默认导出的 `api` 使用 `VITE_API_BASE_URL` 作为基地址，也可以在运行时修改：
+
+```typescript
+import { api } from '@linch-tech/desktop-core';
+
+api.setBaseUrl('https://api.example.com');
+const user = await api.get('/users/1');
+```
+
+也可为不同服务创建独立客户端：
+
+```typescript
+import { createApiClient } from '@linch-tech/desktop-core';
+
+const billingApi = createApiClient({ baseUrl: 'https://billing.example.com' });
+```
+
 ## Rust 后端
 
 ```toml

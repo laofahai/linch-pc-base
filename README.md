@@ -35,6 +35,7 @@ export const config: Partial<LinchDesktopConfig> = {
   },
   i18n: {
     defaultLanguage: 'zh',
+    supportedLanguages: ['zh', 'en'],
     resources: {
       // 应用专属翻译（会和基座翻译合并）
       zh: { app: { name: '我的应用' }, nav: { home: '首页' } },
@@ -53,6 +54,7 @@ export const config: Partial<LinchDesktopConfig> = {
 应用自定义翻译（在 config.i18n.resources 中添加）：
 - 会与基座翻译**深度合并**
 - 可覆盖基座的翻译
+- `supportedLanguages` 会用于语言切换器展示
 
 ### 4. 升级基座
 
