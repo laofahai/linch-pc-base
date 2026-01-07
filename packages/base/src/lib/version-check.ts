@@ -4,7 +4,8 @@
  */
 
 // 当前包版本，构建时注入
-export const CORE_VERSION = __CORE_VERSION__;
+export const CORE_VERSION =
+  typeof __CORE_VERSION__ === 'undefined' ? '__CORE_VERSION__' : __CORE_VERSION__;
 
 interface NpmPackageInfo {
   'dist-tags': {
