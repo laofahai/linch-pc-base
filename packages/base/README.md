@@ -36,7 +36,7 @@ export default function App() {
 }
 ```
 
-如果不使用 `LinchDesktopProvider`，可在入口手动调用 `initI18n()` 来加载应用翻译。
+如果不使用 `LinchDesktopProvider`，可在入口手动调用 `initI18n()` 来加载应用翻译（第三个参数为 `supportedLanguages`）。
 
 ## 配置详解
 
