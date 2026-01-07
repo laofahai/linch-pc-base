@@ -34,7 +34,6 @@ export interface DatabaseInitOptions {
 // ============================================================================
 
 let db: Database | null = null;
-let currentDbName: string = 'sqlite:app.db';
 
 /**
  * Base migrations provided by the core
@@ -82,10 +81,10 @@ export async function initDatabase(options?: DatabaseInitOptions): Promise<Datab
   if (db) return db;
 
   const dbName = options?.name ?? 'app.db';
-  currentDbName = `sqlite:${dbName}`;
+  const dbPath = `sqlite:${dbName}`;
 
   try {
-    db = await Database.load(currentDbName);
+    db = await Database.load(dbPath);
 
     // Combine base migrations with custom migrations
     const allMigrations = [

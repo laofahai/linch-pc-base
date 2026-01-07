@@ -151,7 +151,9 @@ const { theme, setTheme } = useTheme();
 // theme: 'light' | 'dark' | 'system'
 
 // 更新
-const { status, updateInfo, check, download, install } = useUpdater();
+const { status, updateInfo, check, download, install } = useUpdater({
+  enabled: config.features?.updater !== false,
+});
 // status: 'idle' | 'checking' | 'available' | 'downloading' | 'ready'
 
 // 数据库设置

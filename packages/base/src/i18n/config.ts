@@ -47,7 +47,8 @@ export const baseResources = {
           "restart_now": "Restart Now",
           "check_error": "Update check failed",
           "download_error": "Download failed",
-          "retry": "Retry"
+          "retry": "Retry",
+          "updater_disabled": "Updater is disabled"
         }
       }
     }
@@ -92,7 +93,8 @@ export const baseResources = {
           "restart_now": "立即重启",
           "check_error": "检查更新失败",
           "download_error": "下载失败",
-          "retry": "重试"
+          "retry": "重试",
+          "updater_disabled": "更新已禁用"
         }
       }
     }

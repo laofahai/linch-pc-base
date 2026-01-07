@@ -24,9 +24,10 @@ type SettingsTab = 'general' | 'about';
 export function Settings() {
   const { t } = useTranslation();
   const config = useConfig();
+  const updaterEnabled = config.features?.updater !== false;
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
   const { status, updateInfo, progress, error, check, download, install } =
-    useUpdater();
+    useUpdater({ enabled: updaterEnabled });
 
   const handleCheckUpdate = async () => {
     try {
@@ -45,6 +46,14 @@ export function Settings() {
   };
 
   const renderUpdateButton = () => {
+    if (!updaterEnabled) {
+      return (
+        <Button disabled className="w-56">
+          {t('settings.about.updater_disabled')}
+        </Button>
+      );
+    }
+
     switch (status) {
       case 'checking':
         return (
