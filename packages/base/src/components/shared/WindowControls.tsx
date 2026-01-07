@@ -89,6 +89,3 @@ export function WindowControls() {
     </div>
   );
 }
-
-// Export the toggle maximize function for use in TitleBar
-export { tauri };
