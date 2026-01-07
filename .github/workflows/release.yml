@@ -108,6 +108,7 @@ jobs:
             content = content.replace(/\{\{OSS_BUCKET\}\}/g, '${{ vars.OSS_BUCKET }}');
             content = content.replace(/\{\{OSS_REGION\}\}/g, '${{ vars.OSS_REGION }}');
             content = content.replace(/\{\{GITHUB_REPOSITORY\}\}/g, '${{ github.repository }}');
+            content = content.replace(/\{\{REPO_NAME\}\}/g, '${{ github.event.repository.name }}');
             fs.writeFileSync(path, content);
             console.log('Updated tauri.conf.json');
             const parsed = JSON.parse(content);
@@ -181,30 +182,34 @@ jobs:
           sudo mv ossutil-v1.7.18-linux-amd64/ossutil64 /usr/local/bin/ossutil
           ossutil config -e oss-${{ vars.OSS_REGION }}.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }}
 
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+      - name: Get version and project info
+        id: info
+        run: |
+          echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+          echo "PROJECT_NAME=${{ github.event.repository.name }}" >> $GITHUB_OUTPUT
 
       - name: Sync artifacts to OSS
         run: |
-          VERSION=${{ steps.version.outputs.VERSION }}
+          VERSION=${{ steps.info.outputs.VERSION }}
+          PROJECT=${{ steps.info.outputs.PROJECT_NAME }}
           BUCKET=${{ vars.OSS_BUCKET }}
 
-          echo "Uploading to oss://${BUCKET}/releases/${VERSION}/"
+          echo "Uploading to oss://${BUCKET}/releases/${PROJECT}/${VERSION}/"
 
           # Upload all artifacts
           find artifacts -type f \( -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.sig" \) | while read file; do
             filename=$(basename "$file")
             echo "Uploading $filename..."
-            ossutil cp "$file" "oss://${BUCKET}/releases/${VERSION}/${filename}" -f
+            ossutil cp "$file" "oss://${BUCKET}/releases/${PROJECT}/${VERSION}/${filename}" -f
           done
 
       - name: Generate and upload latest.json
         run: |
-          VERSION=${{ steps.version.outputs.VERSION }}
+          VERSION=${{ steps.info.outputs.VERSION }}
+          PROJECT=${{ steps.info.outputs.PROJECT_NAME }}
           BUCKET=${{ vars.OSS_BUCKET }}
           REGION=${{ vars.OSS_REGION }}
-          BASE_URL="https://${BUCKET}.oss-${REGION}.aliyuncs.com/releases/${VERSION}"
+          BASE_URL="https://${BUCKET}.oss-${REGION}.aliyuncs.com/releases/${PROJECT}/${VERSION}"
 
           echo "=== Generating latest.json ==="
 
@@ -254,17 +259,18 @@ jobs:
           cat latest.json
 
           # Upload latest.json
-          ossutil cp latest.json "oss://${BUCKET}/releases/latest.json" -f
+          ossutil cp latest.json "oss://${BUCKET}/releases/${PROJECT}/latest.json" -f
 
       - name: Verify OSS upload
         run: |
           BUCKET=${{ vars.OSS_BUCKET }}
-          VERSION=${{ steps.version.outputs.VERSION }}
+          VERSION=${{ steps.info.outputs.VERSION }}
+          PROJECT=${{ steps.info.outputs.PROJECT_NAME }}
           echo "=== Files in OSS ==="
-          ossutil ls "oss://${BUCKET}/releases/${VERSION}/" --limited-num 50
+          ossutil ls "oss://${BUCKET}/releases/${PROJECT}/${VERSION}/" --limited-num 50
           echo ""
           echo "=== latest.json content ==="
-          ossutil cat "oss://${BUCKET}/releases/latest.json" || echo "Failed to read latest.json"
+          ossutil cat "oss://${BUCKET}/releases/${PROJECT}/latest.json" || echo "Failed to read latest.json"
 
   # Publish release after all builds complete
   publish:
