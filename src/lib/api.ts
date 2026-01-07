@@ -89,7 +89,7 @@ export function createApiClient(config: ApiConfig) {
           throw new ApiException(
             500,
             'Response validation failed',
-            result.error.errors
+            result.error.issues
           );
         }
         return result.data;

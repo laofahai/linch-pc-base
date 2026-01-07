@@ -11,6 +11,7 @@ interface Note {
   id: number;
   content: string;
   created_at: number;
+  updated_at: number;
 }
 
 export default function Demo() {
@@ -31,14 +32,6 @@ export default function Demo() {
 
   const loadNotes = async () => {
     try {
-      // Ensure notes table exists
-      await execute(`
-        CREATE TABLE IF NOT EXISTS notes (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          content TEXT NOT NULL,
-          created_at INTEGER DEFAULT (strftime('%s', 'now'))
-        )
-      `);
       const result = await query<Note>('SELECT * FROM notes ORDER BY created_at DESC LIMIT 5');
       setNotes(result);
     } catch (err) {

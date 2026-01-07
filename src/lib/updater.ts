@@ -79,11 +79,12 @@ export async function downloadAndInstall(
         total = event.data.contentLength || 0;
         onProgress?.({ downloaded: 0, total, percent: 0 });
         break;
-      case 'Progress':
+      case 'Progress': {
         downloaded += event.data.chunkLength;
         const percent = total > 0 ? Math.round((downloaded / total) * 100) : 0;
         onProgress?.({ downloaded, total, percent });
         break;
+      }
       case 'Finished':
         onProgress?.({ downloaded: total, total, percent: 100 });
         break;

@@ -98,6 +98,25 @@ const migrations: Migration[] = [
     up: 'CREATE INDEX IF NOT EXISTS idx_app_state_key ON app_state(key)',
     down: 'DROP INDEX IF EXISTS idx_app_state_key',
   },
+  {
+    version: 4,
+    name: 'create_notes_table',
+    up: `
+      CREATE TABLE IF NOT EXISTS notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL,
+        created_at INTEGER DEFAULT (strftime('%s', 'now')),
+        updated_at INTEGER DEFAULT (strftime('%s', 'now'))
+      )
+    `,
+    down: 'DROP TABLE IF EXISTS notes',
+  },
+  {
+    version: 5,
+    name: 'create_notes_index',
+    up: 'CREATE INDEX IF NOT EXISTS idx_notes_created_at ON notes(created_at DESC)',
+    down: 'DROP INDEX IF EXISTS idx_notes_created_at',
+  },
 ];
 
 /**
@@ -287,7 +306,7 @@ export async function execute(
   const result = await database.execute(sql, params);
   return {
     rowsAffected: result.rowsAffected,
-    lastInsertId: result.lastInsertId,
+    lastInsertId: result.lastInsertId ?? 0,
   };
 }
 

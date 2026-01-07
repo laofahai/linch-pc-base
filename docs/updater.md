@@ -4,9 +4,9 @@
 
 ## 概述
 
-Linch Base 使用 Tauri 官方的 updater 插件实现自动更新，支持：
-- **GitHub Releases**: 开源项目推荐
-- **OSS 静态托管**: 闭源项目推荐 (阿里云 OSS / AWS S3 等)
+Linch Base 使用 Tauri 官方的 updater 插件实现自动更新，支持双更新源：
+- **阿里云 OSS** (主要): 国内访问快，适合闭源项目
+- **GitHub Releases** (备用): 开源项目推荐，OSS 不可用时自动降级
 
 ## 更新流程
 
@@ -48,16 +48,48 @@ pnpm tauri signer generate -w src-tauri/.keys/update.key --ci
 }
 ```
 
-### 3. 配置 GitHub Secrets
+### 3. 配置 GitHub Secrets 和 Variables
 
-在仓库设置中添加以下 Secrets：
+在仓库 Settings → Secrets and variables → Actions 中添加：
+
+**Secrets (敏感信息)**
 
 | Secret | 说明 |
 |--------|------|
 | `TAURI_SIGNING_PRIVATE_KEY` | 私钥文件内容 (cat src-tauri/.keys/update.key) |
 | `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` | 私钥密码 (如果设置了的话) |
+| `OSS_ACCESS_KEY_ID` | 阿里云 AccessKey ID |
+| `OSS_ACCESS_KEY_SECRET` | 阿里云 AccessKey Secret |
 
-### 4. 发布更新
+**Variables (非敏感配置)**
+
+| Variable | 说明 | 示例 |
+|----------|------|------|
+| `ENABLE_OSS_SYNC` | 是否启用 OSS 同步 | `true` |
+| `OSS_BUCKET` | OSS Bucket 名称 | `my-app-releases` |
+| `OSS_REGION` | OSS 区域 | `cn-hangzhou` |
+
+### 4. 配置 tauri.conf.json
+
+修改 `src-tauri/tauri.conf.json` 中的 endpoints：
+
+```json
+{
+  "plugins": {
+    "updater": {
+      "pubkey": "你的公钥",
+      "endpoints": [
+        "https://YOUR_BUCKET.oss-YOUR_REGION.aliyuncs.com/releases/latest.json",
+        "https://github.com/OWNER/REPO/releases/latest/download/latest.json"
+      ]
+    }
+  }
+}
+```
+
+> **注意**: endpoints 按顺序尝试，第一个失败会自动尝试下一个
+
+### 5. 发布更新
 
 ```bash
 # 更新版本号
@@ -95,25 +127,39 @@ git push && git push --tags
 }
 ```
 
-### OSS 静态托管
+### 阿里云 OSS 配置 (推荐)
 
+本项目已集成自动 OSS 同步，CI/CD 会自动上传构建产物到 OSS。
+
+**OSS Bucket 设置**
+
+1. 创建 Bucket，选择公共读
+2. 开启静态网站托管（可选，用于自定义域名）
+3. 配置 CORS（如需要跨域访问）
+
+**OSS 目录结构** (自动生成):
+```
+releases/
+├── latest.json              # 版本信息 (必须)
+├── 0.2.0/                   # 版本目录
+│   ├── app_0.2.0_x64.msi
+│   ├── app_0.2.0_x64.msi.sig
+│   ├── app_0.2.0_aarch64.app.tar.gz
+│   ├── app_0.2.0_aarch64.app.tar.gz.sig
+│   ├── app_0.2.0_x64.app.tar.gz
+│   ├── app_0.2.0_x64.app.tar.gz.sig
+│   └── app_0.2.0_amd64.AppImage
+└── 0.1.0/                   # 历史版本
+    └── ...
+```
+
+**仅使用 OSS 配置**:
 ```json
 {
   "endpoints": [
-    "https://your-bucket.oss-cn-hangzhou.aliyuncs.com/updates/latest.json"
+    "https://your-bucket.oss-cn-hangzhou.aliyuncs.com/releases/latest.json"
   ]
 }
-```
-
-OSS 目录结构：
-```
-updates/
-├── latest.json           # 版本信息
-├── app_0.2.0_x64.msi     # Windows 安装包
-├── app_0.2.0_x64.msi.sig # 签名文件
-├── app_0.2.0_aarch64.dmg # macOS ARM
-├── app_0.2.0_x64.dmg     # macOS Intel
-└── app_0.2.0_amd64.AppImage # Linux
 ```
 
 ### 自建服务器

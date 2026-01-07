@@ -39,9 +39,10 @@
       "open": true
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDBGNTVDM0I2NjEyMkY1NzUKUldSMTlTSmh0c05WRDZrNi9oUHgrcjJpS3g1cDZUOFZEczVTUlNxRmpUS240TDdNcGI2Qkg1ekgK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJBRkM5REEyNzE1RTBFOEIKUldTTERsNXhvcDM4S21zMEwyMktyK0ZyeDdOVU5GcnFzL20xUWt3K0lsYlo1amh1T0JjSDNzbjkK",
       "endpoints": [
-        "https://github.com/{{GITHUB_OWNER}}/{{GITHUB_REPO}}/releases/latest/download/latest.json"
+        "https://{{OSS_BUCKET}}.oss-{{OSS_REGION}}.aliyuncs.com/releases/latest.json",
+        "https://github.com/{{GITHUB_REPOSITORY}}/releases/latest/download/latest.json"
       ],
       "windows": {
         "installMode": "passive"

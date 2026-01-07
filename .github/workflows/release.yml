@@ -61,7 +61,24 @@ jobs:
       - name: Install frontend dependencies
         run: pnpm install
 
+      - name: Replace config placeholders
+        run: |
+          # Replace placeholders in tauri.conf.json (cross-platform)
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            sed -i '' "s/{{OSS_BUCKET}}/${{ vars.OSS_BUCKET }}/g" src-tauri/tauri.conf.json
+            sed -i '' "s/{{OSS_REGION}}/${{ vars.OSS_REGION }}/g" src-tauri/tauri.conf.json
+            sed -i '' "s|{{GITHUB_REPOSITORY}}|${{ github.repository }}|g" src-tauri/tauri.conf.json
+          else
+            sed -i "s/{{OSS_BUCKET}}/${{ vars.OSS_BUCKET }}/g" src-tauri/tauri.conf.json
+            sed -i "s/{{OSS_REGION}}/${{ vars.OSS_REGION }}/g" src-tauri/tauri.conf.json
+            sed -i "s|{{GITHUB_REPOSITORY}}|${{ github.repository }}|g" src-tauri/tauri.conf.json
+          fi
+          echo "Updated tauri.conf.json endpoints:"
+          grep -A 5 '"endpoints"' src-tauri/tauri.conf.json
+        shell: bash
+
       - name: Build Tauri app
+        id: tauri
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -74,6 +91,142 @@ jobs:
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
+
+      - name: Upload artifacts for OSS sync
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts-${{ matrix.platform }}-${{ matrix.target || 'default' }}
+          path: |
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.msi
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.nsis
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.exe
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.dmg
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.app.tar.gz
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.AppImage
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.deb
+            src-tauri/target/${{ matrix.target || 'release' }}/release/bundle/**/*.sig
+            src-tauri/target/release/bundle/**/*.msi
+            src-tauri/target/release/bundle/**/*.exe
+            src-tauri/target/release/bundle/**/*.dmg
+            src-tauri/target/release/bundle/**/*.app.tar.gz
+            src-tauri/target/release/bundle/**/*.AppImage
+            src-tauri/target/release/bundle/**/*.deb
+            src-tauri/target/release/bundle/**/*.sig
+          if-no-files-found: ignore
+
+  # Sync to Aliyun OSS
+  # Requires secrets: OSS_ACCESS_KEY_ID, OSS_ACCESS_KEY_SECRET, OSS_BUCKET, OSS_REGION
+  sync-oss:
+    needs: release
+    runs-on: ubuntu-latest
+    if: ${{ vars.ENABLE_OSS_SYNC == 'true' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Setup aliyun ossutil
+        run: |
+          curl -o ossutil64 https://gosspublic.alicdn.com/ossutil/1.7.18/ossutil-v1.7.18-linux-amd64.zip
+          unzip ossutil64
+          chmod +x ossutil-v1.7.18-linux-amd64/ossutil64
+          sudo mv ossutil-v1.7.18-linux-amd64/ossutil64 /usr/local/bin/ossutil
+          ossutil config -e oss-${{ vars.OSS_REGION }}.aliyuncs.com -i ${{ secrets.OSS_ACCESS_KEY_ID }} -k ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Sync artifacts to OSS
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          BUCKET=${{ vars.OSS_BUCKET }}
+
+          # Create releases directory structure
+          ossutil mkdir oss://${BUCKET}/releases/${VERSION}/ 2>/dev/null || true
+
+          # Upload all artifacts
+          find artifacts -type f \( -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.sig" \) | while read file; do
+            filename=$(basename "$file")
+            echo "Uploading $filename..."
+            ossutil cp "$file" "oss://${BUCKET}/releases/${VERSION}/${filename}" -f
+          done
+
+      - name: Generate and upload latest.json
+        run: |
+          VERSION=${{ steps.version.outputs.VERSION }}
+          BUCKET=${{ vars.OSS_BUCKET }}
+          REGION=${{ vars.OSS_REGION }}
+          BASE_URL="https://${BUCKET}.oss-${REGION}.aliyuncs.com/releases/${VERSION}"
+
+          echo "Artifacts found:"
+          find artifacts -type f \( -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" -o -name "*.AppImage" -o -name "*.sig" \) | sort
+
+          # Create proper JSON with jq
+          jq -n \
+            --arg version "$VERSION" \
+            --arg notes "Release $VERSION" \
+            --arg pub_date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{version: $version, notes: $notes, pub_date: $pub_date, platforms: {}}' > latest.json
+
+          # Add platform entries
+          add_platform() {
+            local platform=$1
+            local pattern=$2
+            local file=$(find artifacts -type f -name "$pattern" 2>/dev/null | head -1)
+
+            if [ -n "$file" ] && [ -f "$file" ]; then
+              local filename=$(basename "$file")
+              local sig_file="${file}.sig"
+              local sig_content=""
+
+              if [ -f "$sig_file" ]; then
+                sig_content=$(cat "$sig_file")
+                echo "Found signature for $filename"
+              else
+                echo "Warning: No signature file for $filename"
+              fi
+
+              echo "Adding platform $platform: $filename"
+              jq --arg platform "$platform" \
+                 --arg url "${BASE_URL}/${filename}" \
+                 --arg sig "$sig_content" \
+                 '.platforms[$platform] = {url: $url, signature: $sig}' latest.json > tmp.json && mv tmp.json latest.json
+            else
+              echo "No file found for platform $platform (pattern: $pattern)"
+            fi
+          }
+
+          # Windows: prefer .msi, fallback to .exe (NSIS)
+          add_platform "windows-x86_64" "*.msi"
+
+          # macOS ARM64
+          add_platform "darwin-aarch64" "*aarch64*.app.tar.gz"
+
+          # macOS x64
+          add_platform "darwin-x86_64" "*x64*.app.tar.gz"
+
+          # Linux
+          add_platform "linux-x86_64" "*.AppImage"
+
+          echo ""
+          echo "Generated latest.json:"
+          cat latest.json
+
+          # Upload latest.json
+          ossutil cp latest.json "oss://${BUCKET}/releases/latest.json" -f
+
+      - name: Verify OSS upload
+        run: |
+          BUCKET=${{ vars.OSS_BUCKET }}
+          echo "Files in releases directory:"
+          ossutil ls "oss://${BUCKET}/releases/" --limited-num 50
 
   # Optional: SignPath signing for Windows
   # Uncomment when you have SignPath configured

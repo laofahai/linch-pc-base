@@ -61,13 +61,13 @@ export async function createUser(data: { name: string; email: string }): Promise
 // 4. Using defineEndpoint for reusable endpoints
 // ============================================================================
 
-const getUserEndpoint = defineEndpoint<{ id: number }, void, User>({
+export const getUserEndpoint = defineEndpoint<{ id: number }, void, User>({
   method: 'GET',
   path: (params) => `/users/${params.id}`,
   responseSchema: UserSchema,
 });
 
-const createUserEndpoint = defineEndpoint<void, { name: string; email: string }, User>({
+export const createUserEndpoint = defineEndpoint<void, { name: string; email: string }, User>({
   method: 'POST',
   path: '/users',
   responseSchema: UserSchema,

@@ -25,11 +25,8 @@ export function DatabaseProvider({ children, fallback }: DatabaseProviderProps) 
             Database Error
           </div>
           <p className="text-muted-foreground text-sm max-w-md">
-            {error.message || String(error)}
+            {error.message || 'Failed to initialize database'}
           </p>
-          <pre className="text-xs text-left bg-muted p-4 rounded max-w-lg overflow-auto">
-            {JSON.stringify(error, null, 2)}
-          </pre>
         </div>
       </div>
     );

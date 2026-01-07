@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Settings, User } from "lucide-react";
 import { appConfig } from "@/config/app";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
