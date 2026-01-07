@@ -191,14 +191,6 @@ export interface LayoutConfig {
     showWindowControls?: boolean;
     draggable?: boolean;
   };
-
-  /**
-   * Content area configuration
-   */
-  content?: {
-    padding?: number;
-    maxWidth?: number;
-  };
 }
 
 // ============================================================================

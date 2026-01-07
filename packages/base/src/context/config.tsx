@@ -22,10 +22,6 @@ const defaultConfig: LinchDesktopConfig = {
       showWindowControls: true,
       draggable: true,
     },
-    content: {
-      padding: 24,
-      maxWidth: 0, // 0 = no limit
-    },
   },
 };
 
@@ -43,7 +39,6 @@ function mergeConfig(
     layout: {
       sidebar: { ...base.layout?.sidebar, ...override.layout?.sidebar },
       titleBar: { ...base.layout?.titleBar, ...override.layout?.titleBar },
-      content: { ...base.layout?.content, ...override.layout?.content },
     },
     slots: { ...base.slots, ...override.slots },
     components: { ...base.components, ...override.components },
