@@ -32,7 +32,8 @@ export class ApiException extends Error {
 // ============================================================================
 
 export function createApiClient(config: ApiConfig) {
-  const { baseUrl, timeout = 30000, headers: defaultHeaders = {} } = config;
+  let baseUrl = config.baseUrl;
+  const { timeout = 30000, headers: defaultHeaders = {} } = config;
 
   async function request<T>(
     method: string,
@@ -142,6 +143,14 @@ export function createApiClient(config: ApiConfig) {
 
     removeHeader(key: string) {
       delete defaultHeaders[key];
+    },
+
+    setBaseUrl(url: string) {
+      baseUrl = url;
+    },
+
+    getBaseUrl() {
+      return baseUrl;
     },
   };
 }
