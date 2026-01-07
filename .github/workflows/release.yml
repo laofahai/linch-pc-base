@@ -49,40 +49,57 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
 
-    # Skip if workflow_dispatch with specific platform that doesn't match
-    if: ${{ github.event.inputs.platform == '' || github.event.inputs.platform == matrix.label }}
-
     steps:
+      - name: Check if should run
+        id: should_run
+        shell: bash
+        run: |
+          INPUT_PLATFORM="${{ github.event.inputs.platform }}"
+          MATRIX_LABEL="${{ matrix.label }}"
+          if [ -n "$INPUT_PLATFORM" ] && [ "$INPUT_PLATFORM" != "$MATRIX_LABEL" ]; then
+            echo "Skipping $MATRIX_LABEL (requested: $INPUT_PLATFORM)"
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Building $MATRIX_LABEL"
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout
+        if: steps.should_run.outputs.skip != 'true'
         uses: actions/checkout@v4
 
       - name: Setup Node.js
+        if: steps.should_run.outputs.skip != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
 
       - name: Setup pnpm
+        if: steps.should_run.outputs.skip != 'true'
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
       - name: Install Rust stable
+        if: steps.should_run.outputs.skip != 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Add Rust target
-        if: matrix.rust_target != ''
+        if: steps.should_run.outputs.skip != 'true' && matrix.rust_target != ''
         run: rustup target add ${{ matrix.rust_target }}
 
       - name: Install dependencies (Ubuntu)
-        if: matrix.platform == 'ubuntu-22.04'
+        if: steps.should_run.outputs.skip != 'true' && matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
       - name: Install frontend dependencies
+        if: steps.should_run.outputs.skip != 'true'
         run: pnpm install
 
       - name: Replace config placeholders
+        if: steps.should_run.outputs.skip != 'true'
         run: |
           node -e "
             const fs = require('fs');
@@ -98,6 +115,7 @@ jobs:
           "
 
       - name: Build Tauri app
+        if: steps.should_run.outputs.skip != 'true'
         id: tauri
         uses: tauri-apps/tauri-action@v0
         env:
@@ -113,12 +131,14 @@ jobs:
           args: ${{ matrix.args }}
 
       - name: List build artifacts
+        if: steps.should_run.outputs.skip != 'true'
         run: |
           echo "=== Build artifacts ==="
           find src-tauri/target -type f \( -name "*.msi" -o -name "*.exe" -o -name "*.dmg" -o -name "*.app.tar.gz" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.sig" \) 2>/dev/null || true
         shell: bash
 
       - name: Upload artifacts for OSS sync
+        if: steps.should_run.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.label }}
