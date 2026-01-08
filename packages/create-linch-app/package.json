@@ -1,10 +1,10 @@
 {
-  "name": "create-linch-app",
-  "version": "0.1.2",
+  "name": "@linch-tech/create-desktop-app",
+  "version": "0.1.4",
   "description": "Create a new Linch Desktop application",
   "type": "module",
   "bin": {
-    "create-linch-app": "./dist/index.js"
+    "create-linch-desktop-app": "./dist/index.js"
   },
   "files": [
     "dist",

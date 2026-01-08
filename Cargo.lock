@@ -2208,8 +2208,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "linch_desktop_core"
-version = "0.1.2"
+name = "linch_tech_desktop_core"
+version = "0.1.3"
 dependencies = [
  "sentry",
  "serde",
@@ -3101,7 +3101,7 @@ checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
 name = "playground"
 version = "0.1.2"
 dependencies = [
- "linch_desktop_core",
+ "linch_tech_desktop_core",
  "serde",
  "serde_json",
  "tauri",

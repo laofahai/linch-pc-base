@@ -22,6 +22,9 @@ async function main() {
     .description('Create a new Linch Desktop application')
     .argument('[project-name]', 'Name of the project')
     .option('-t, --template <template>', 'Template to use', 'default')
+    .option('-d, --display-name <name>', 'Display name shown in title bar')
+    .option('-i, --identifier <id>', 'App identifier (e.g., com.company.app)')
+    .option('-y, --yes', 'Skip prompts and use defaults/provided values')
     .parse();
 
   const args = program.args;
@@ -33,57 +36,78 @@ async function main() {
 
   let projectName = args[0];
 
+  const isNonInteractive = options.yes;
+
   // 如果没有提供项目名，询问用户
   if (!projectName) {
-    const response = await prompts({
-      type: 'text',
-      name: 'projectName',
-      message: 'Project name:',
-      initial: 'my-linch-app',
-      validate: (value) => {
-        const validation = validatePackageName(value);
-        if (!validation.validForNewPackages) {
-          return validation.errors?.[0] || 'Invalid package name';
-        }
-        return true;
-      },
-    });
+    if (isNonInteractive) {
+      projectName = 'my-linch-app';
+    } else {
+      const response = await prompts({
+        type: 'text',
+        name: 'projectName',
+        message: 'Project name:',
+        initial: 'my-linch-app',
+        validate: (value) => {
+          const validation = validatePackageName(value);
+          if (!validation.validForNewPackages) {
+            return validation.errors?.[0] || 'Invalid package name';
+          }
+          return true;
+        },
+      });
 
-    if (!response.projectName) {
+      if (!response.projectName) {
+        console.log(pc.red('Operation cancelled'));
+        process.exit(1);
+      }
+      projectName = response.projectName;
+    }
+  }
+
+  // 生成默认值
+  const defaultDisplayName = projectName
+    .split('-')
+    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+    .join(' ');
+  const defaultIdentifier = `com.linch.${projectName.replace(/-/g, '')}`;
+
+  let displayName: string;
+  let identifier: string;
+
+  if (isNonInteractive) {
+    // 非交互模式：使用命令行参数或默认值
+    displayName = options.displayName || defaultDisplayName;
+    identifier = options.identifier || defaultIdentifier;
+  } else {
+    // 交互模式：询问用户
+    const answers = await prompts([
+      {
+        type: 'text',
+        name: 'displayName',
+        message: 'Display name (shown in title bar):',
+        initial: options.displayName || defaultDisplayName,
+      },
+      {
+        type: 'text',
+        name: 'identifier',
+        message: 'App identifier (e.g., com.company.app):',
+        initial: options.identifier || defaultIdentifier,
+        validate: (value) => {
+          if (!/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/.test(value)) {
+            return 'Invalid identifier format (e.g., com.company.app)';
+          }
+          return true;
+        },
+      },
+    ]);
+
+    if (!answers.displayName || !answers.identifier) {
       console.log(pc.red('Operation cancelled'));
       process.exit(1);
     }
-    projectName = response.projectName;
-  }
-
-  // 获取更多项目信息
-  const { displayName, identifier } = await prompts([
-    {
-      type: 'text',
-      name: 'displayName',
-      message: 'Display name (shown in title bar):',
-      initial: projectName
-        .split('-')
-        .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-        .join(' '),
-    },
-    {
-      type: 'text',
-      name: 'identifier',
-      message: 'App identifier (e.g., com.company.app):',
-      initial: `com.linch.${projectName.replace(/-/g, '')}`,
-      validate: (value) => {
-        if (!/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/.test(value)) {
-          return 'Invalid identifier format (e.g., com.company.app)';
-        }
-        return true;
-      },
-    },
-  ]);
-
-  if (!displayName || !identifier) {
-    console.log(pc.red('Operation cancelled'));
-    process.exit(1);
+    displayName = answers.displayName;
+    identifier = answers.identifier;
   }
 
   const projectOptions: ProjectOptions = {
@@ -96,19 +120,24 @@ async function main() {
 
   // 检查目录是否已存在
   if (fs.existsSync(targetDir)) {
-    const { overwrite } = await prompts({
-      type: 'confirm',
-      name: 'overwrite',
-      message: `Directory ${pc.cyan(projectName)} already exists. Remove existing files and continue?`,
-      initial: false,
-    });
+    if (isNonInteractive) {
+      // 非交互模式：直接覆盖
+      fs.rmSync(targetDir, { recursive: true, force: true });
+    } else {
+      const { overwrite } = await prompts({
+        type: 'confirm',
+        name: 'overwrite',
+        message: `Directory ${pc.cyan(projectName)} already exists. Remove existing files and continue?`,
+        initial: false,
+      });
 
-    if (!overwrite) {
-      console.log(pc.red('Operation cancelled'));
-      process.exit(1);
+      if (!overwrite) {
+        console.log(pc.red('Operation cancelled'));
+        process.exit(1);
+      }
+
+      fs.rmSync(targetDir, { recursive: true, force: true });
     }
-
-    fs.rmSync(targetDir, { recursive: true, force: true });
   }
 
   // 创建项目

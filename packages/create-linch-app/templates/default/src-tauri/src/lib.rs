@@ -1,4 +1,4 @@
-use linch_desktop_core::{LinchDesktopExt, LinchConfig};
+use linch_tech_desktop_core::{LinchDesktopExt, LinchConfig};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
