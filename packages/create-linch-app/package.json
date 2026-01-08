@@ -3,6 +3,10 @@
   "version": "0.1.6",
   "description": "Create a new Linch Desktop application",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laofahai/linch-pc-base"
+  },
   "bin": {
     "create-linch-desktop-app": "./dist/index.js"
   },

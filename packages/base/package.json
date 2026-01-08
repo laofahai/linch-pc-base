@@ -2,6 +2,10 @@
   "name": "@linch-tech/desktop-core",
   "version": "0.1.6",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/laofahai/linch-pc-base"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
