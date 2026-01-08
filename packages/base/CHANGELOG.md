@@ -1,5 +1,11 @@
 # @linch-tech/desktop-core
 
+## 0.1.6
+
+### Patch Changes
+
+- [`5c65fb9`](https://github.com/laofahai/linch-pc-base/commit/5c65fb96a0032fe4dfb86299c931b1b6ae77136b) Thanks [@laofahai](https://github.com/laofahai)! - fix: CI/CD workflow improvements and Rust formatting
+
 ## 0.1.5
 
 ### Patch Changes
