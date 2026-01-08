@@ -48,6 +48,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
+      - name: Install system dependencies for Rust
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
       - name: Publish Rust crate
         if: steps.changesets.outputs.published == 'true'
         run: |
