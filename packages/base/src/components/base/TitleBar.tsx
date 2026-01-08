@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../context/config';
 import { cn } from '../../lib/utils';
+import { logger } from '../../lib/logger';
 import * as tauri from '../../lib/tauri';
 import { LanguageSwitcher } from '../shared/LanguageSwitcher';
 import { ThemeSwitcher } from '../shared/ThemeSwitcher';
@@ -37,7 +38,7 @@ export function TitleBar({ className }: TitleBarProps) {
     try {
       await tauri.toggleMaximize();
     } catch (e) {
-      console.error('Failed to toggle maximize:', e);
+      logger.error('Failed to toggle maximize', { error: e });
     }
   };
 

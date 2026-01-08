@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { logger } from './logger';
 
 // ============================================================================
 // Types
@@ -86,7 +87,7 @@ export function createApiClient(config: ApiConfig) {
       if (schema) {
         const result = schema.safeParse(data);
         if (!result.success) {
-          console.error('API response validation failed:', result.error);
+          logger.error('API response validation failed', { error: result.error });
           throw new ApiException(
             500,
             'Response validation failed',

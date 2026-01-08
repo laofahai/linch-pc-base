@@ -7,6 +7,7 @@ import {
   setAppState,
   type DatabaseInitOptions,
 } from '../lib/database';
+import { logger } from '../lib/logger';
 
 // ============================================================================
 // Database Initialization Hook
@@ -28,7 +29,7 @@ export function useDatabaseInit(options?: DatabaseInitOptions): UseDatabaseInit 
     initDatabase(options)
       .then(() => setIsReady(true))
       .catch((err) => {
-        console.error('Database initialization failed:', err);
+        logger.error('Database initialization failed', { error: err });
         setError(err);
       });
   }, [options?.name]); // Only re-init if db name changes
@@ -121,7 +122,7 @@ export function useAppState<T>(
         setIsLoading(false);
       })
       .catch((err) => {
-        console.error(`Failed to load app state for key "${key}":`, err);
+        logger.error('Failed to load app state', { key, error: err });
         setIsLoading(false);
       });
   }, [key, defaultValue]);

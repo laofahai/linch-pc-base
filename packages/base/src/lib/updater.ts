@@ -1,6 +1,7 @@
 import { check, type Update } from '@tauri-apps/plugin-updater';
 import { relaunch } from '@tauri-apps/plugin-process';
 import { ask } from '@tauri-apps/plugin-dialog';
+import { logger } from './logger';
 
 // ============================================================================
 // Types
@@ -56,7 +57,7 @@ export async function checkForUpdate(): Promise<UpdateInfo> {
 
     return { available: false };
   } catch (error) {
-    console.error('Failed to check for updates:', error);
+    logger.error('Failed to check for updates', { error });
     throw error;
   }
 }

@@ -1,6 +1,7 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { useDatabaseInit } from '../../hooks/use-database';
 import type { Migration } from '../../lib/database';
+import { logger } from '../../lib/logger';
 
 interface DatabaseContextValue {
   isReady: boolean;
@@ -34,7 +35,7 @@ export function DatabaseProvider({
   const { isReady, error } = useDatabaseInit({ name: dbName, migrations });
 
   if (error) {
-    console.error('Database initialization error:', error);
+    logger.error('Database initialization error', { error });
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : '';
     return (

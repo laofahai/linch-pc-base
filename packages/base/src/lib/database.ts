@@ -1,4 +1,5 @@
 import Database from '@tauri-apps/plugin-sql';
+import { logger } from './logger';
 
 // ============================================================================
 // Types
@@ -95,7 +96,7 @@ export async function initDatabase(options?: DatabaseInitOptions): Promise<Datab
     await runMigrations(allMigrations);
     return db;
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    logger.error('Failed to initialize database', { error });
     throw error;
   }
 }
@@ -148,7 +149,7 @@ async function runMigrations(migrations: Migration[]): Promise<void> {
   // Run pending migrations
   for (const migration of migrations) {
     if (!appliedVersions.has(migration.version)) {
-      console.log(`Running migration: ${migration.name}`);
+      logger.info('Running migration', { name: migration.name });
       await database.execute(migration.up);
       await database.execute(
         'INSERT INTO _migrations (version, name) VALUES ($1, $2)',

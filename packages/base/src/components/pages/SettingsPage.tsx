@@ -16,6 +16,7 @@ import { Logo } from '../shared/Logo';
 import { useConfig } from '../../context/config';
 import { useUpdater } from '../../hooks/use-updater';
 import { cn } from '../../lib/utils';
+import { logger } from '../../lib/logger';
 
 type SettingsTab = 'general' | 'about';
 
@@ -35,7 +36,7 @@ export function SettingsPage({ footer }: SettingsPageProps) {
     try {
       await check();
     } catch (err) {
-      console.error('Update check failed:', err);
+      logger.error('Update check failed', { error: err });
     }
   };
 
@@ -43,7 +44,7 @@ export function SettingsPage({ footer }: SettingsPageProps) {
     try {
       await download();
     } catch (err) {
-      console.error('Download failed:', err);
+      logger.error('Download failed', { error: err });
     }
   };
 

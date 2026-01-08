@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Minus, Square, X, Maximize2 } from "lucide-react";
 import { Button } from "../ui/button";
 import * as tauri from "../../lib/tauri";
+import { logger } from "../../lib/logger";
 
 export function WindowControls() {
   const [isMaximized, setIsMaximized] = useState(false);
@@ -14,7 +15,7 @@ export function WindowControls() {
           setIsMaximized(maximized);
         }
       } catch (e) {
-        console.error("Failed to check maximized state:", e);
+        logger.error("Failed to check maximized state", { error: e });
       }
     };
 
@@ -34,7 +35,7 @@ export function WindowControls() {
     try {
       await tauri.minimizeWindow();
     } catch (e) {
-      console.error("Failed to minimize:", e);
+      logger.error("Failed to minimize window", { error: e });
     }
   };
 
@@ -44,7 +45,7 @@ export function WindowControls() {
       const maximized = await tauri.isMaximized();
       setIsMaximized(maximized);
     } catch (e) {
-      console.error("Failed to toggle maximize:", e);
+      logger.error("Failed to toggle maximize", { error: e });
     }
   };
 
@@ -52,7 +53,7 @@ export function WindowControls() {
     try {
       await tauri.closeWindow();
     } catch (e) {
-      console.error("Failed to close:", e);
+      logger.error("Failed to close window", { error: e });
     }
   };
 
