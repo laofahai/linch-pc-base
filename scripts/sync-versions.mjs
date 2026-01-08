@@ -20,10 +20,9 @@ const repoUrl = 'https://github.com/laofahai/linch-pc-base';
 
 console.log(`\n📦 Syncing version ${version} to Rust crates and templates...\n`);
 
-// 更新 Rust crate 版本
+// 更新 Rust crate 版本 (只更新发布的包，不更新 playground)
 const cargoFiles = [
   'packages/tauri/Cargo.toml',
-  'playground/src-tauri/Cargo.toml',
 ];
 
 for (const file of cargoFiles) {
@@ -34,24 +33,6 @@ for (const file of cargoFiles) {
     fs.writeFileSync(fullPath, content);
     console.log(`  ✓ ${file}`);
   }
-}
-
-// 更新 playground package.json 版本
-const playgroundPkgPath = path.join(ROOT, 'playground/package.json');
-if (fs.existsSync(playgroundPkgPath)) {
-  const playgroundPkg = JSON.parse(fs.readFileSync(playgroundPkgPath, 'utf-8'));
-  playgroundPkg.version = version;
-  fs.writeFileSync(playgroundPkgPath, JSON.stringify(playgroundPkg, null, 2) + '\n');
-  console.log('  ✓ playground/package.json');
-}
-
-// 更新 playground tauri.conf.json 版本
-const playgroundTauriConfig = path.join(ROOT, 'playground/src-tauri/tauri.conf.json');
-if (fs.existsSync(playgroundTauriConfig)) {
-  const tauriConfig = JSON.parse(fs.readFileSync(playgroundTauriConfig, 'utf-8'));
-  tauriConfig.version = version;
-  fs.writeFileSync(playgroundTauriConfig, JSON.stringify(tauriConfig, null, 2) + '\n');
-  console.log('  ✓ playground tauri.conf.json');
 }
 
 // 更新模板中的依赖版本
