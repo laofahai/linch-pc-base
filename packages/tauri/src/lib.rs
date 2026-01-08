@@ -29,7 +29,6 @@ pub struct LinchConfig {
 
     /// Sentry sample rate (0.0 - 1.0)
     pub sentry_sample_rate: f32,
-
 }
 
 impl LinchConfig {
@@ -152,6 +151,5 @@ pub mod commands {
 ///     .expect("error running app");
 /// ```
 pub fn create_builder() -> tauri::Builder<Wry> {
-    tauri::Builder::default()
-        .with_linch_desktop(LinchConfig::from_env())
+    tauri::Builder::default().with_linch_desktop(LinchConfig::from_env())
 }
