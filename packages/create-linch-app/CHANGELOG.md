@@ -1,5 +1,11 @@
 # @linch-tech/create-desktop-app
 
+## 0.1.7
+
+### Patch Changes
+
+- [`b985a3d`](https://github.com/laofahai/linch-pc-base/commit/b985a3d4d54b7f9fa9d77b45b1a56e1d4546c7fd) Thanks [@laofahai](https://github.com/laofahai)! - fix: add repository url and system dependencies for releases
+
 ## 0.1.6
 
 ### Patch Changes
