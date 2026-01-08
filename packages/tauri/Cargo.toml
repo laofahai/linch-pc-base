@@ -1,6 +1,6 @@
 [package]
 name = "linch_tech_desktop_core"
-version = "0.1.3"
+version = "0.1.5"
 description = "Linch Desktop Core - Tauri extension library"
 authors = ["Linch Tech"]
 edition = "2021"
