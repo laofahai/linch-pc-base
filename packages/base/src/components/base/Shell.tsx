@@ -112,7 +112,7 @@ export function Shell({ children, className, noOutlet }: ShellProps) {
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  className={({ isActive }) =>
+                  className={({ isActive }: { isActive: boolean }) =>
                     cn(
                       'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all',
                       isActive
@@ -121,7 +121,7 @@ export function Shell({ children, className, noOutlet }: ShellProps) {
                     )
                   }
                 >
-                  {({ isActive }) => renderNavItem(item, isActive)}
+                  {({ isActive }: { isActive: boolean }) => renderNavItem(item, isActive)}
                 </NavLink>
               ))}
             </nav>

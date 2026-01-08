@@ -10,8 +10,8 @@ declare global {
     readonly VITE_SENTRY_DSN?: string;
     readonly VITE_API_BASE_URL?: string;
   }
-}
 
-declare const __CORE_VERSION__: string;
+  const __CORE_VERSION__: string;
+}
 
 export {};
