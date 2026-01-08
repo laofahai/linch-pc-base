@@ -9,10 +9,15 @@ Tauri v2 + React 19 桌面应用基座框架。
 ### 1. 创建新应用
 
 ```bash
-pnpm create linch-app my-app
+npx @linch-tech/create-desktop-app my-app
 cd my-app
 pnpm install
 pnpm tauri:dev
+```
+
+或使用非交互模式：
+```bash
+npx @linch-tech/create-desktop-app my-app -y -d "My App" -i "com.company.myapp"
 ```
 
 ### 2. 项目配置
@@ -75,15 +80,11 @@ pnpm update @linch-tech/desktop-core
 **Rust 部分**：
 编辑 `src-tauri/Cargo.toml`，更新版本号：
 ```toml
-# 未发布到 crates.io 前，使用 git 依赖
-linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", tag = "v0.1.2", package = "linch_desktop_core" }
-
-# 发布到 crates.io 后可改为版本号
-# linch_desktop_core = "0.2"
+linch_tech_desktop_core = "0.1"
 ```
 然后重新构建：
 ```bash
-pnpm tauri:build
+cargo update && pnpm tauri:build
 ```
 
 **破坏性更新**：查看 GitHub Releases 了解迁移步骤。
@@ -97,8 +98,8 @@ pnpm tauri:build
 ```
 ├── packages/
 │   ├── base/              # @linch-tech/desktop-core (npm)
-│   ├── tauri/             # linch_desktop_core (Rust crate)
-│   └── create-linch-app/  # CLI 脚手架
+│   ├── tauri/             # linch_tech_desktop_core (Rust crate)
+│   └── create-linch-app/  # @linch-tech/create-desktop-app CLI
 └── playground/            # 开发测试应用
 ```
 
@@ -127,13 +128,22 @@ pnpm version
 pnpm release
 ```
 
-### 4. 版本号说明
+### 4. GitHub Secrets 配置
+
+自动发布需要在 GitHub repo settings 中配置以下 secrets：
+
+| Secret | 说明 |
+|--------|------|
+| `NPM_TOKEN` | npm 发布 token（需要 automation 权限） |
+| `CARGO_REGISTRY_TOKEN` | crates.io 发布 token |
+
+### 5. 版本号说明
 
 | 包 | 位置 | 同步方式 |
 |---|---|---|
 | @linch-tech/desktop-core | packages/base/package.json | changesets 自动 |
-| create-linch-app | packages/create-linch-app/package.json | changesets 自动 |
-| linch_desktop_core | packages/tauri/Cargo.toml | sync-versions 脚本 |
+| @linch-tech/create-desktop-app | packages/create-linch-app/package.json | changesets 自动 |
+| linch_tech_desktop_core | packages/tauri/Cargo.toml | sync-versions 脚本 |
 | 模板依赖版本 | packages/create-linch-app/templates/ | sync-versions 脚本 |
 
 ---
@@ -143,8 +153,8 @@ pnpm release
 | 包名 | 类型 | 说明 |
 |------|------|------|
 | `@linch-tech/desktop-core` | npm | 前端组件、hooks、工具库 |
-| `linch_desktop_core` | Rust crate | Tauri 插件初始化 |
-| `create-linch-app` | npm (CLI) | 脚手架，创建新项目 |
+| `linch_tech_desktop_core` | Rust crate | Tauri 插件初始化 |
+| `@linch-tech/create-desktop-app` | npm (CLI) | 脚手架，创建新项目 |
 
 详细 API 文档见 [packages/base/README.md](./packages/base/README.md)
 

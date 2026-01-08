@@ -6,7 +6,7 @@ Tauri v2 + React 19 桌面应用核心库。
 
 ```bash
 # 推荐：使用脚手架
-pnpm create linch-app my-app
+npx @linch-tech/create-desktop-app my-app
 
 # 或手动安装
 pnpm add @linch-tech/desktop-core
@@ -220,16 +220,12 @@ const billingApi = createApiClient({ baseUrl: 'https://billing.example.com' });
 ```toml
 # src-tauri/Cargo.toml
 [dependencies]
-# 未发布到 crates.io 前，使用 git 依赖
-linch_desktop_core = { git = "https://github.com/laofahai/linch-pc-base", tag = "v0.1.2", package = "linch_desktop_core" }
-
-# 发布到 crates.io 后可改为版本号
-# linch_desktop_core = "0.1"
+linch_tech_desktop_core = "0.1"
 ```
 
 ```rust
 // src-tauri/src/lib.rs
-use linch_desktop_core::{LinchDesktopExt, LinchConfig};
+use linch_tech_desktop_core::{LinchDesktopExt, LinchConfig};
 
 pub fn run() {
     let config = LinchConfig::from_env();
@@ -249,9 +245,9 @@ pnpm update @linch-tech/desktop-core
 ```
 
 **Rust**：
-```toml
-# 编辑 src-tauri/Cargo.toml
-linch_desktop_core = "新版本号"
+```bash
+# 更新到最新版本
+cargo update
 ```
 
 **注意**：开发模式下会自动检测新版本并在控制台提示。

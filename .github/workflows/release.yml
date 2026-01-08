@@ -2,16 +2,19 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
+      pull-requests: write
+      id-token: write
 
     steps:
       - name: Checkout
@@ -31,21 +34,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Publish npm packages
-        run: pnpm release
+      - name: Create Release Pull Request or Publish
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          version: pnpm version
+          publish: pnpm release
+          title: 'chore: version packages'
+          commit: 'chore: version packages'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish Rust crate
-        if: ${{ secrets.CARGO_REGISTRY_TOKEN != '' }}
-        run: cargo publish --manifest-path packages/tauri/Cargo.toml
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          cargo publish --manifest-path packages/tauri/Cargo.toml --allow-dirty
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true
-          draft: false
+      - name: Create Git Tag
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          VERSION=$(node -p "require('./packages/base/package.json').version")
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -65,13 +65,15 @@ if (fs.existsSync(templatePkg)) {
   }
 }
 
-// 更新模板 Cargo.toml
+// 更新模板 Cargo.toml (使用 crates.io)
 const templateCargo = path.join(ROOT, 'packages/create-linch-app/templates/default/src-tauri/Cargo.toml');
 if (fs.existsSync(templateCargo)) {
   let content = fs.readFileSync(templateCargo, 'utf-8');
-  const gitDep = `linch_desktop_core = { git = "${repoUrl}", tag = "v${version}", package = "linch_desktop_core" }`;
-  content = content.replace(/linch_desktop_core\s*=\s*"[^"]+"/g, gitDep);
-  content = content.replace(/linch_desktop_core\s*=\s*\{[^}]*\}/g, gitDep);
+  // 使用 crates.io 版本而不是 git
+  const [major, minor] = version.split('.');
+  const cratesDep = `linch_tech_desktop_core = "${major}.${minor}"`;
+  content = content.replace(/linch_tech_desktop_core\s*=\s*"[^"]+"/g, cratesDep);
+  content = content.replace(/linch_tech_desktop_core\s*=\s*\{[^}]*\}/g, cratesDep);
   fs.writeFileSync(templateCargo, content);
   console.log(`  ✓ Template Cargo.toml`);
 }
