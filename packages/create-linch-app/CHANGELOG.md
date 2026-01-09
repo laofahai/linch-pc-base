@@ -1,5 +1,7 @@
 # @linch-tech/create-desktop-app
 
+## 0.1.8
+
 ## 0.1.7
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @linch-tech/desktop-core
 
+## 0.1.8
+
+### Patch Changes
+
+- fix: 移除 TitleBar 重复的双击最大化处理
+
+  修复双击标题栏时触发两次最大化切换的问题。
+  原因是 `data-tauri-drag-region` 已经会自动处理双击最大化，
+  不需要额外的 `onDoubleClick` 事件处理。
+
 ## 0.1.7
 
 ### Patch Changes
