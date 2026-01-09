@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useConfig } from '../../context/config';
 import { cn } from '../../lib/utils';
-import { logger } from '../../lib/logger';
-import * as tauri from '../../lib/tauri';
 import { LanguageSwitcher } from '../shared/LanguageSwitcher';
 import { ThemeSwitcher } from '../shared/ThemeSwitcher';
 import { WindowControls } from '../shared/WindowControls';
@@ -33,15 +31,6 @@ export function TitleBar({ className }: TitleBarProps) {
     };
   }, []);
 
-  const handleToggleMaximize = async () => {
-    if (!titleBarConfig?.draggable) return;
-    try {
-      await tauri.toggleMaximize();
-    } catch (e) {
-      logger.error('Failed to toggle maximize', { error: e });
-    }
-  };
-
   // Get logo component
   const LogoComponent = brand.logo ?? Logo;
 
@@ -55,7 +44,6 @@ export function TitleBar({ className }: TitleBarProps) {
       style={{
         height: titleBarConfig?.height ?? 40,
       }}
-      onDoubleClick={handleToggleMaximize}
       data-tauri-drag-region={titleBarConfig?.draggable !== false}
     >
       {/* Left Slot or Default: Logo & Title */}
