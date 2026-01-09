@@ -95,6 +95,21 @@ export { ErrorBoundary } from './components/providers/ErrorBoundary';
 export { useDatabaseInit, useSetting, useAppState } from './hooks/use-database';
 export { useTheme } from './hooks/use-theme';
 export { useUpdater } from './hooks/use-updater';
+export { useLocalStorage } from './hooks/use-local-storage';
+export { useAsync, useFetch } from './hooks/use-async';
+export type { AsyncState, UseAsyncReturn } from './hooks/use-async';
+export {
+  useDebounce,
+  useDebouncedCallback,
+  useThrottle,
+  useThrottledCallback,
+} from './hooks/use-debounce';
+export {
+  useClickOutside,
+  useClickOutsideMultiple,
+  useEscapeKey,
+  useClickOutsideOrEscape,
+} from './hooks/use-click-outside';
 
 // Lib - Database
 export {
